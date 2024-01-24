@@ -5,7 +5,6 @@ class PrinterModelValue:
     _valueMax = "?"
     _valueMin = "?"
 
-
     def set(self, value):
         self._valueCurrent = value
 
