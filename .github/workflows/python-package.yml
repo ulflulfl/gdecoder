@@ -40,7 +40,7 @@ jobs:
         pytest
     - name: Test with pytest (incl. coverage)
       run: |
-        pytest --cov .
-    - name: Create test coverage in html format
-      run: |
-        coverage html
+        pytest --cov=.
+#    - name: Create test coverage in html format
+#      run: |
+#        coverage html
