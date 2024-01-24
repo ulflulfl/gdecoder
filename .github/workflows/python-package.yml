@@ -38,9 +38,10 @@ jobs:
 #    - name: Test with pytest
 #      run: |
 #        pytest
-    - name: Test with pytest (incl. coverage)
-      run: |
-        pytest --cov=. --cov-report html
-#    - name: Create test coverage in html format
+#    - name: Test with pytest (incl. coverage)
 #      run: |
-#        coverage html
+#        pytest --cov=. --cov-report html
+
+    - name: Test with pytest (incl. coverage.xml)
+      run: |
+        pytest --cov=. --cov-report xml:./coverage.xml
