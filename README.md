@@ -10,3 +10,16 @@ There are other similiar programs like: https://github.com/BarrensZeppelin/human
 Hint: Many gcode details can be found at:
 * https://reprap.org/wiki/G-code
 * https://marlinfw.org/meta/gcode/
+
+## Tests
+
+There seems to be many ways to start pytest, this is what works for me ...
+
+Run tests:
+python -m pytest
+
+Coverage run (for all python files):
+python -m pytest --cov=.
+
+Coverage HTML report:
+coverage html
