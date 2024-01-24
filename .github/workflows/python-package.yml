@@ -46,8 +46,13 @@ jobs:
       run: |
         pytest --cov=. --cov-report xml:./coverage.xml
 
-    - name: Get Cover
-      uses: orgoro/coverage@v3.1
-      with:
-          coverageFile: ./coverage.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
+#    - name: Get Cover
+#      uses: orgoro/coverage@v3.1
+#      with:
+ #         coverageFile: ./coverage.xml
+ #         token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
