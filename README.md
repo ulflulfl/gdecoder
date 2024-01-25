@@ -1,4 +1,7 @@
 # gdecoder
+
+[![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org) [![codecov](https://codecov.io/gh/ulflulfl/gdecoder/graph/badge.svg?token=3E8MW86VM7)](https://codecov.io/gh/ulflulfl/gdecoder) [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 Simple decode of 3D printer .gcode files, focussed on common x/y/z printer with a single extruder.
 
 In an attempt to understand gcode details, I've started a simple python script that takes the gcode (text) file and adds human readable comments to it. In addition, if adds meta infos like the printed area and (common) filament types probably suitable (based on the temperatures used).
