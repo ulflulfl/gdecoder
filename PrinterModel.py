@@ -1,7 +1,8 @@
 # very simple 3d printer model
 # (many details not included, e.g. dual extruder)
 
-from PrinterModelValue import *
+from PrinterModelValue import PrinterModelValue
+
 
 class PrinterModel:
 
@@ -31,7 +32,6 @@ class PrinterModel:
         self.printPositionY = PrinterModelValue()
         self.printPositionZ = PrinterModelValue()
 
-
     def setFan(self, value):
         self.fan.set(value)
 
@@ -40,7 +40,6 @@ class PrinterModel:
 
     def setExtruderTemperature(self, value):
         self.extruderTemp.set(value)
-
 
     def setExtruderMoveMode(self, value):
         if value != "relative" and value != "absolute":
@@ -52,7 +51,6 @@ class PrinterModel:
     def setExtruderPosition(self, value):
         self.extruderLogical.set(value)
 
-
     def setPositioningMode(self, value):
         if value != "relative" and value != "absolute":
             raise Exception("setPositioningMode: Unexpected value: " + value)
@@ -62,12 +60,11 @@ class PrinterModel:
     def setFeedrate(self, value):
         self.feedrate = value
 
-
     def home(self, x, y):
         z = ""
 
         # if no specific X or Y given, home all three axis
-        if x =="" and y =="":
+        if x == "" and y == "":
             x = "0"
             y = "0"
             z = "0"
@@ -95,13 +92,12 @@ class PrinterModel:
         # TODO: Is the positioning mode important here?
         self.positionZ.set("0")
 
-
     def printLinear(self, x, y, z, e):
         # TODO: if distance calculation will be added, this must be improved
-        #if x != "" and y != "":
+        # if x != "" and y != "":
         #    self._printX(x)
         #    self._printY(y)
-        #else:
+        # else:
         if x != "":
             self._printX(x)
         if y != "":
@@ -111,27 +107,25 @@ class PrinterModel:
         if e != "":
             self._printE(e)
 
-
     def printCW(self, x, y, i, j, e):
         # TODO: if distance calculation will be added, this must be improved
-        #if x != "" and y != "":
+        # if x != "" and y != "":
         #    self._printX(x)
         #    self._printY(y)
-        #else:
+        # else:
         if x != "":
             self._printX(x)
         if y != "":
             self._printY(y)
         if e != "":
             self._printE(e)
-
 
     def printCCW(self, x, y, i, j, e):
         # TODO: if distance calculation will be added, this must be improved
-        #if x != "" and y != "":
+        # if x != "" and y != "":
         #    self._printX(x)
         #    self._printY(y)
-        #else:
+        # else:
         if x != "":
             self._printX(x)
         if y != "":
@@ -139,9 +133,9 @@ class PrinterModel:
         if e != "":
             self._printE(e)
 
-
     def _printX(self, value):
-        # G1 print commands will usually not include the z direction, call printZPhysical here to remember the Z min/max values correctly
+        # G1 print commands will usually not include the z direction
+        # call printZPhysical here to remember the Z min/max values correctly
         self._printZPhysical(self.positionZ.get())
 
         if self.positioningMode != "absolute":
@@ -155,9 +149,9 @@ class PrinterModel:
         # remember the end point
         self.printPositionX.set(value)
 
-
     def _printY(self, value):
-        # G1 print commands will usually not include the z direction, call printZPhysical here to remember the Z min/max values correctly
+        # G1 print commands will usually not include the z direction
+        # call printZPhysical here to remember the Z min/max values correctly
         self._printZPhysical(self.positionZ.get())
 
         if self.positioningMode != "absolute":
@@ -171,7 +165,6 @@ class PrinterModel:
         # remember the end point
         self.printPositionY.set(value)
 
-
     def _printZPhysical(self, value):
         # remember the start point
         self.printPositionZ.set(self.positionZ.get())
@@ -180,7 +173,6 @@ class PrinterModel:
 
         # remember the end point
         self.printPositionZ.set(value)
-
 
     def _printZ(self, value):
         match self.positioningMode:
@@ -195,35 +187,32 @@ class PrinterModel:
             case _:
                 raise Exception("printZ: Positioning mode unexpected: " + self.positioningMode)
 
-
     def _printE(self, value):
         match self.extruderMoveMode:
             case "absolute":
                 newPhysical = float(self.extruderPhysical.get()) + float(value) - float(self.extruderLogical.get())
-                newLogical  = float(value)
+                newLogical = float(value)
             case "relative":
                 newPhysical = float(self.extruderPhysical.get()) + float(value)
-                newLogical  = float(self.extruderLogical.get())  + float(value)
+                newLogical = float(self.extruderLogical.get()) + float(value)
             case _:
                 raise Exception("extruder move mode not implemented: " + self.extruderMoveMode)
 
         self.extruderPhysical.set(str(newPhysical))
         self.extruderLogical.set(str(newLogical))
 
-
-    def move(self, x ,y, z):
+    def move(self, x, y, z):
         # TODO: if distance calculation will be added, this must be improved
-        #if x != "" and y != "":
+        # if x != "" and y != "":
         #    self._moveX(x)
         #    self._moveY(y)
-        #else:
+        # else:
         if x != "":
             self._moveX(x)
         if y != "":
             self._moveY(y)
         if z != "":
             self._moveZ(z)
-
 
     def _moveX(self, value):
         match self.positioningMode:
@@ -232,14 +221,12 @@ class PrinterModel:
             case _:
                 raise Exception("moveX: Positioning mode unexpected: " + self.positioningMode)
 
-
     def _moveY(self, value):
         match self.positioningMode:
             case "absolute":
                 self.positionY.set(value)
             case _:
                 raise Exception("moveY: Positioning mode unexpected: " + self.positioningMode)
-
 
     def _moveZ(self, value):
         match self.positioningMode:
