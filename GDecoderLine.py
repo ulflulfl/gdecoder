@@ -56,7 +56,7 @@ class GDecoderLine:
                     value = token[1:]
                     match key:
                         case "F":
-                            decoded += ", Feedrate: " + value + " " + printer.unit + "/min."
+                            decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
                             decoded = "Rapid Move"
@@ -90,7 +90,7 @@ class GDecoderLine:
                             decoded += ", E: " + value + " " + printer.unit
                             e = value
                         case "F":
-                            decoded += ", Feedrate: " + value + " " + printer.unit + "/min."
+                            decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
                             decoded = "Linear Move"
@@ -124,7 +124,7 @@ class GDecoderLine:
                             decoded += ", E: " + value + " " + printer.unit
                             e = value
                         case "F":
-                            decoded += ", feedrate/min.: " + value
+                            decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
                             decoded = "Clockwise Arc Move"
@@ -160,7 +160,7 @@ class GDecoderLine:
                             decoded += ", E: " + value + " " + printer.unit
                             e = value
                         case "F":
-                            decoded += ", feedrate/min.: " + value
+                            decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
                             decoded = "Counter-Clockwise Arc Move"

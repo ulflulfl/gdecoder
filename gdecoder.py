@@ -1,5 +1,5 @@
 # Simple decode of gcode 3D printer files
-# focussed on common x/y/z printer with a single extruder
+# focused on common x/y/z printer with a single extruder
 #
 # Hint: Many gcode details can be found at:
 # https://reprap.org/wiki/G-code
