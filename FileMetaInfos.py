@@ -1,5 +1,8 @@
 # Analyze meta infos from the .gcode input file
 
+import os
+
+
 class FileMetaInfos:
 
     generator = ""
@@ -7,6 +10,8 @@ class FileMetaInfos:
     generator_flavor = ""
 
     fileName = ""
+    fileSize = 0
+    modifiedTime = ""
     longestLine = 0
     lineCount = 0
 
@@ -45,6 +50,9 @@ class FileMetaInfos:
 
         file1 = open(fileName, 'r', encoding='utf-8')
         Lines = file1.readlines()
+
+        self.fileSize = os.path.getsize(fileName)
+        self.modifiedTime = os.path.getmtime(fileName)
 
         for line in Lines:
             self.lineCount += 1
