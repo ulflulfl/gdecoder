@@ -186,27 +186,64 @@ def test_decodeGCodeLine_G3X1Y2I3J4E5_positionOk():
     assert(printer.extruderPhysical.get()) == "5.0"
 
 
-def test_decodeGCodeLine_G4_Message():
+message_testdata = [
+    ("G4", "Dwell (aka: Pause)"),
+    ("G21", "Set Units to Millimeters"),
+    ("G28 F100 W",
+        "Move to Origin (Home, often: X=0, Y=0; Z=0), " +
+        "unknown parameter (maybe feedrate?): F100, Suppress mesh bed leveling (Prusa only)"),
+    ("G80", "Mesh-based Z probe"),
+    ("G90", "Set to Absolute Positioning"),
+    ("G91", "Set to Relative Positioning"),
+    ("G92", "Set Position"),
+    ("M73 P1 Q2 R3 S4",
+        "Set/Get build percentage, " +
+        "Normal mode: 1 %, Silent mode: 2 %, Remaining in normal mode: 3 min., Remaining in silent mode: 4 min."),
+    ("M84", "Stop idle hold"),
+    ("M105", "Get Extruder Temperature"),
+    ("M115 U1", "Get Firmware Version and Capabilities, Check the firmware version: 1"),
+    ("M117 Message to be displayed", "Display Message: Message to be displayed"),
+    ("M190 S50", "Wait for bed temperature to reach target temp, Target: 50 °C"),
+    ("M201 X1 Y2 Z3 E4", "Set max acceleration, X: 1 mm/s², Y: 2 mm/s², Z: 3 mm/s², E: 4 mm/s²"),
+    ("M300 P1 S2", "Play beep sound, duration: 1 ms, frequency: 2 Hz"),
+]
+
+
+@pytest.mark.parametrize("gcode,expected_message", message_testdata)
+def test_decodeGCodeLine_SimpleCommand_Message(gcode, expected_message):
     # arrange
     metaInfos = FileMetaInfos()
     printer = PrinterModel()
     decodeLine = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G4", printer)
+    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
 
     # assert
-    assert(decoded) == "Dwell (aka: Pause)"
+    assert(decoded) == expected_message
 
 
-def test_decodeGCodeLine_G21_Message():
+g28_xy_testdata = [
+    ("", "Move to Origin (Home, often: X=0, Y=0; Z=0)", "0", "0"),
+    ("X0", "Move to Origin (Home, often: X=0, Y=0; Z=0), X axis origin: 0", "0", "20"),
+    ("Y0", "Move to Origin (Home, often: X=0, Y=0; Z=0), Y axis origin: 0", "10", "0"),
+]
+
+
+@pytest.mark.parametrize("xy,expected_message,expected_x,expected_y", g28_xy_testdata)
+def test_decodeGCodeLine_g28xy_PositionXY(xy, expected_message, expected_x, expected_y):
     # arrange
     metaInfos = FileMetaInfos()
     printer = PrinterModel()
+    printer.home("", "")
+    printer._moveX("10")
+    printer._moveY("20")
     decodeLine = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G21", printer)
+    decoded = decodeLine.decodeGCodeLine(metaInfos, "G28 " + xy, printer)
 
     # assert
-    assert(decoded) == "Set Units to Millimeters"
+    assert(decoded) == expected_message
+    assert(printer.positionX.get()) == expected_x
+    assert(printer.positionY.get()) == expected_y
