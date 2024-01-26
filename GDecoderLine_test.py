@@ -247,3 +247,81 @@ def test_decodeGCodeLine_g28xy_PositionXY(xy, expected_message, expected_x, expe
     assert(decoded) == expected_message
     assert(printer.positionX.get()) == expected_x
     assert(printer.positionY.get()) == expected_y
+
+
+def test_decodeGCodeLine_G92E10_extruderPositionOk():
+    # arrange
+    metaInfos = FileMetaInfos()
+    printer = PrinterModel()
+    printer.setExtruderPosition("0")
+    assert(printer.extruderLogical.get()) == "0"
+    assert(printer.extruderPhysical.get()) == "0"
+    decodeLine = GDecoderLine()
+
+    # act
+    decoded = decodeLine.decodeGCodeLine(metaInfos, "G92 E10", printer)
+
+    # assert
+    assert(decoded) == "Set Position, new extruder position: 10 mm"
+    assert(printer.extruderLogical.get()) == "10"
+    assert(printer.extruderPhysical.get()) == "0"
+
+
+def test_decodeGCodeLine_M104S50_extruderTempOk():
+    # arrange
+    metaInfos = FileMetaInfos()
+    printer = PrinterModel()
+    assert(printer.extruderTemp.get()) == "?"
+    decodeLine = GDecoderLine()
+
+    # act
+    decoded = decodeLine.decodeGCodeLine(metaInfos, "M104 S50", printer)
+
+    # assert
+    assert(decoded) == "Set Extruder Temperature, Target: 50 °C"
+    assert(printer.extruderTemp.get()) == "50"
+
+
+def test_decodeGCodeLine_M106S50_fanOk():
+    # arrange
+    metaInfos = FileMetaInfos()
+    printer = PrinterModel()
+    assert(printer.fan.get()) == "?"
+    decodeLine = GDecoderLine()
+
+    # act
+    decoded = decodeLine.decodeGCodeLine(metaInfos, "M106 S50", printer)
+
+    # assert
+    assert(decoded) == "Fan On, Fan Speed: 50 (0-255)"
+    assert(printer.fan.get()) == "50"
+
+
+def test_decodeGCodeLine_M109S50_extruderTempOk():
+    # arrange
+    metaInfos = FileMetaInfos()
+    printer = PrinterModel()
+    assert(printer.extruderTemp.get()) == "?"
+    decodeLine = GDecoderLine()
+
+    # act
+    decoded = decodeLine.decodeGCodeLine(metaInfos, "M109 S50", printer)
+
+    # assert
+    assert(decoded) == "Set Extruder Temperature and Wait, Target: 50 °C"
+    assert(printer.extruderTemp.get()) == "50"
+
+
+def test_decodeGCodeLine_M140S50_bedTempOk():
+    # arrange
+    metaInfos = FileMetaInfos()
+    printer = PrinterModel()
+    assert(printer.bedTemp.get()) == "?"
+    decodeLine = GDecoderLine()
+
+    # act
+    decoded = decodeLine.decodeGCodeLine(metaInfos, "M140 S50", printer)
+
+    # assert
+    assert(decoded) == "Set Bed Temperature (Fast), Target: 50 °C"
+    assert(printer.bedTemp.get()) == "50"

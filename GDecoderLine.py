@@ -283,7 +283,7 @@ class GDecoderLine:
                     value = token[1:]
                     match key:
                         case "E":
-                            decoded += ", new extruder position: " + value
+                            decoded += ", new extruder position: " + value + " " + printer.unit
                             printer.setExtruderPosition(value)
                         case "G":
                             decoded = "Set Position"
@@ -378,7 +378,7 @@ class GDecoderLine:
                         case "M":
                             decoded = "Fan On"
                         case "S":
-                            decoded += ", Fan Speed: " + value
+                            decoded += ", Fan Speed: " + value + " (0-255)"
                             printer.setFan(value)
                         case _:
                             decoded += self.undecodedGCodeSubtoken(splitted, token)
