@@ -4,17 +4,24 @@ from PrinterModel import PrinterModel
 from FileMetaInfos import FileMetaInfos
 
 
-def test_decodeGCodeLine_empty_empty():
+gcode_empty_testdata = [
+    ("", ""),
+    ("Filament-specific end gcode", ""),    # ignore a slicer bug
+]
+
+
+@pytest.mark.parametrize("gcode,expected_decode", gcode_empty_testdata)
+def test_decodeGCodeLine_emptyOutput(gcode, expected_decode):
     # arrange
     metaInfos = FileMetaInfos()
     printer = PrinterModel()
     decodeLine = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "", printer)
+    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
 
     # assert
-    assert(decoded) == ""
+    assert(decoded) == expected_decode
 
 
 invalid_gcode_testdata = [
@@ -46,20 +53,11 @@ invalid_gcode_testdata = [
         "Set Extruder Temperature and Wait, ", "Unknown subtoken: invalidCommand in: ['M109', 'invalidCommand']"),
     ("M115 invalidCommand",
         "Get Firmware Version and Capabilities, ", "Unknown subtoken: invalidCommand in: ['M115', 'invalidCommand']"),
-    # ("M117 invalidCommand", "", "Display Message: invalidCommand"),
     ("M140 invalidCommand", "Set Bed Temperature (Fast), ", "Unknown subtoken: invalidCommand in: ['M140', 'invalidCommand']"),
     ("M190 invalidCommand",
         "Wait for bed temperature to reach target temp, ", "Unknown subtoken: invalidCommand in: ['M190', 'invalidCommand']"),
     ("M201 invalidCommand", "Set max acceleration, ", "Unknown subtoken: invalidCommand in: ['M201', 'invalidCommand']"),
-    # ("M203 invalidCommand", "Set maximum feedrate, ", "Unknown subtoken: invalidCommand in: ['M203', 'invalidCommand']"),
-    # ("M204 invalidCommand", "", ""),
-    # ("M205 invalidCommand", "", ""),
-    # ("M221 invalidCommand", "", ""),
     ("M300 invalidCommand", "Play beep sound, ", "Unknown subtoken: invalidCommand in: ['M300', 'invalidCommand']"),
-    # ("M862.1 invalidCommand", "", ""),
-    # ("M862.3 invalidCommand", "", ""),
-    # ("M900 invalidCommand", "", ""),
-    # ("M907 invalidCommand", "", ""),
 ]
 
 
@@ -94,6 +92,133 @@ def test_decodeGCodeLine_invalidCommand_raisesException(gcode, expected_decode, 
     assert exception_msg == expected_message
 
 
+generator_specific_gcode_testdata = [
+    ("M203 X1 Y2 Z3 E4", "PrusaSlicer",
+        "Set maximum feedrate, X: 1 mm/s², Y: 2 mm/s², Z: 3 mm/s², E: 4 mm/s²"),
+    ("M203 invalidCommand",
+        "PrusaSlicer", "Set maximum feedrate, Unknown subtoken: invalidCommand in: ['M203', 'invalidCommand']"),
+    ("M204 P1 R2 S3 T4",
+        "PrusaSlicer", "Set default acceleration, printing: 1 mm/s², retract: 2 mm/s², normal: 3 mm/s², travel: 4 mm/s²"),
+    ("M204 invalidCommand",
+        "PrusaSlicer", "Set default acceleration, Unknown subtoken: invalidCommand in: ['M204', 'invalidCommand']"),
+    ("M205 X1 Y2 Z3 S4 T5 E6",
+        "PrusaSlicer", "Advanced settings, X Jerk: 1 mm/s, Y Jerk: 2 mm/s, Z Jerk: 3 mm/s, " +
+        "min. print speed: 4 mm/s, min. travel speed: 5 mm/s, E jerk: 6 mm/s"),
+    ("M205 invalidCommand",
+        "PrusaSlicer", "Advanced settings, Unknown subtoken: invalidCommand in: ['M205', 'invalidCommand']"),
+    ("M221 S1", "PrusaSlicer",
+        "Set extrude factor override percentage, Extrude factor override percentage: 1 %"),
+    ("M221 invalidCommand",
+        "PrusaSlicer", "Set extrude factor override percentage, " +
+        "Unknown subtoken: invalidCommand in: ['M221', 'invalidCommand']"),
+    ("M900 K1", "PrusaSlicer",
+        "Set Linear Advance Scaling Factors, Advance K factor: 1"),
+    ("M900 invalidCommand",
+        "PrusaSlicer", "Set Linear Advance Scaling Factors, Unknown subtoken: invalidCommand in: ['M900', 'invalidCommand']"),
+    ("M907 E1", "PrusaSlicer",
+        "Set digital trimpot motor current, Set E stepper current: 1 A"),
+    ("M907 E100", "PrusaSlicer",
+        "Set digital trimpot motor current, Set E stepper current: 100 %"),
+    ("M907 E1000", "PrusaSlicer",
+        "Set digital trimpot motor current, Set E stepper current: 1000 mA"),
+    ("M907 E10000", "PrusaSlicer",
+        "Set digital trimpot motor current, Value 10000 out of range in: M907 E10000, Set E stepper current: 10000 ?"),
+    ("M907 invalidCommand", "PrusaSlicer",
+        "Set digital trimpot motor current, Unknown subtoken: invalidCommand in: ['M907', 'invalidCommand']"),
+]
+
+
+@pytest.mark.parametrize("gcode,generator,expected_message", generator_specific_gcode_testdata)
+def test_decodeGCodeLine_GeneratorSpecific_Message(gcode, generator, expected_message):
+    # arrange
+    metaInfos = FileMetaInfos()
+    metaInfos.generator = generator
+    printer = PrinterModel()
+    decodeLine = GDecoderLine()
+
+    # act
+    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+
+    # assert
+    assert(decoded) == expected_message
+
+
+def test_decodeGCodeLine_GeneratorSpecificOutOfRange_RaisesException():
+    # arrange
+    metaInfos = FileMetaInfos()
+    metaInfos.generator = "PrusaSlicer"
+    printer = PrinterModel()
+    decodeLine = GDecoderLine()
+    decodeLine.stopOnUndecoded = True
+
+    # act
+    with pytest.raises(Exception) as e_info:
+        decodeLine.decodeGCodeLine(metaInfos, "M907 E10000", printer)
+
+    # assert
+    exception_msg = e_info.value.args[0]
+    assert exception_msg == "Value 10000 out of range in: M907 E10000"
+
+
+generator_specific_gcode_wrong_generator_testdata = [
+    ("M203", "", "['M203'] Set maximum feedrate"),
+    ("M203", "Cura", "['M203'] Set maximum feedrate"),
+    ("M203", "Slic3r", "['M203'] Set maximum feedrate"),
+    ("M204", "", "['M204'] Set default acceleration"),
+    ("M204", "Cura", "['M204'] Set default acceleration"),
+    ("M205", "", "['M205'] Advanced settings"),
+    ("M205", "Slic3r", "['M205'] Advanced settings"),
+    ("M205", "Cura", "['M205'] Advanced settings"),
+    ("M221", "", "['M221'] Set extrude factor override percentage"),
+    ("M221", "Cura", "['M221'] Set extrude factor override percentage"),
+    ("M862.1", "", "['M862.1'] Check nozzle diameter (prusa only, undecoded): ['M862.1']"),
+    ("M862.1", "Slic3r", "['M862.1'] Check nozzle diameter (prusa only, undecoded): ['M862.1']"),
+    ("M862.1", "Cura", "['M862.1'] Check nozzle diameter (prusa only, undecoded): ['M862.1']"),
+    ("M862.3", "", "['M862.3'] Model name (prusa only, undecoded): ['M862.3']"),
+    ("M862.3", "Slic3r", "['M862.3'] Model name (prusa only, undecoded): ['M862.3']"),
+    ("M862.3", "Cura", "['M862.3'] Model name (prusa only, undecoded): ['M862.3']"),
+    ("M900", "", "['M900'] Set Linear Advance Scaling Factors"),
+    ("M900", "Cura", "['M900'] Set Linear Advance Scaling Factors"),
+    ("M907", "", "['M907'] Set digital trimpot motor current"),
+    ("M907", "Slic3r", "['M907'] Set digital trimpot motor current"),
+    ("M907", "Cura", "['M907'] Set digital trimpot motor current"),
+]
+
+
+@pytest.mark.parametrize("gcode,generator,expected_message", generator_specific_gcode_wrong_generator_testdata)
+def test_decodeGCodeLine_InvalidGeneratorSpecific_ErrorMessage(gcode, generator, expected_message):
+    # arrange
+    metaInfos = FileMetaInfos()
+    metaInfos.generator = generator
+    printer = PrinterModel()
+    decodeLine = GDecoderLine()
+
+    # act
+    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+
+    # assert
+    assert(decoded) == "Uexpected generator " + generator + " for firmware dependent: " + expected_message
+
+
+# We've checked all the invalid generator messages already above,
+# only check here if an Exception is raised if stopOnUndecoded is True
+def test_decodeGCodeLine_InvalidGeneratorSpecific_RaisesException():
+    # arrange
+    metaInfos = FileMetaInfos()
+    metaInfos.generator = "abc"
+    printer = PrinterModel()
+    decodeLine = GDecoderLine()
+    decodeLine.stopOnUndecoded = True
+
+    # act
+    with pytest.raises(Exception) as e_info:
+        decodeLine.decodeGCodeLine(metaInfos, "M203", printer)
+
+    # assert
+    exception_msg = e_info.value.args[0]
+    assert exception_msg == "Uexpected generator abc for firmware dependent: ['M203']"
+
+
 valid_gcode_feedrate_testdata = [
     ("G0", "Rapid Move"),
     ("G1", "Linear Move"),
@@ -103,7 +228,7 @@ valid_gcode_feedrate_testdata = [
 
 
 @pytest.mark.parametrize("gcode,expected_decode_part", valid_gcode_feedrate_testdata)
-def test_decodeGCodeLine_validCommandWithFeedrate_raisesException(gcode, expected_decode_part):
+def test_decodeGCodeLine_validCommandWithFeedrate_expectedFeedrate(gcode, expected_decode_part):
     # arrange
     metaInfos = FileMetaInfos()
     printer = PrinterModel()
@@ -186,7 +311,7 @@ def test_decodeGCodeLine_G3X1Y2I3J4E5_positionOk():
     assert(printer.extruderPhysical.get()) == "5.0"
 
 
-message_testdata = [
+simple_gcode_testdata = [
     ("G4", "Dwell (aka: Pause)"),
     ("G21", "Set Units to Millimeters"),
     ("G28 F100 W",
@@ -209,7 +334,7 @@ message_testdata = [
 ]
 
 
-@pytest.mark.parametrize("gcode,expected_message", message_testdata)
+@pytest.mark.parametrize("gcode,expected_message", simple_gcode_testdata)
 def test_decodeGCodeLine_SimpleCommand_Message(gcode, expected_message):
     # arrange
     metaInfos = FileMetaInfos()

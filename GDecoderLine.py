@@ -13,26 +13,33 @@ class GDecoderLine:
 
     stopOnUndecoded = False
 
-    def undecodedGCode(self, line):
+    def error_undecodedGCode(self, line):
         message = "Unknown gcode: " + str(line)
         if self.stopOnUndecoded:
             raise Exception(message)
         else:
             return message
 
-    def undecodedGCodeSubtoken(self, splitted, token):
+    def error_undecodedGCodeSubtoken(self, splitted, token):
         message = "Unknown subtoken: " + token + " in: " + str(splitted)
         if self.stopOnUndecoded:
             raise Exception(message)
         else:
             return ", " + message
 
-    def firmwareDependentButUnknownGenerator(self, metaInfos, splitted):
-        message = "Uexpected generator " + metaInfos.generator_line + " for firmware dependent: " + str(splitted)
+    def error_firmwareDependentButUnknownGenerator(self, metaInfos, splitted):
+        message = "Uexpected generator " + metaInfos.generator + " for firmware dependent: " + str(splitted)
         if self.stopOnUndecoded:
             raise Exception(message)
         else:
             return message
+
+    def error_valueOutOfRange(self, line, value):
+        message = "Value " + value + " out of range in: " + line
+        if self.stopOnUndecoded:
+            raise Exception(message)
+        else:
+            return ", " + message
 
     def decodeGCodeLine(self, metaInfos, line, printer):
         decoded = ""
@@ -74,7 +81,7 @@ class GDecoderLine:
                             decoded += ", Z: " + value + " " + printer.unit
                             z = value
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 # call move() after the (optional) feedrate was set
                 printer.move(x, y, z)
 
@@ -108,7 +115,7 @@ class GDecoderLine:
                             decoded += ", Z: " + value + " " + printer.unit
                             z = value
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 # call printLinear() after the feedrate was set
                 printer.printLinear(x, y, z, e)
 
@@ -145,7 +152,7 @@ class GDecoderLine:
                             decoded += ", Y:" + value
                             y = value
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 printer.printCW(x, y, i, j, e)
 
                 return decoded
@@ -181,7 +188,7 @@ class GDecoderLine:
                             decoded += ", Y:" + value
                             y = value
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 printer.printCCW(x, y, i, j, e)
 
                 return decoded
@@ -193,7 +200,7 @@ class GDecoderLine:
                         case "G":
                             decoded = "Dwell (aka: Pause)"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # G21: Set Units to Millimeters
             case "G21":
@@ -203,7 +210,7 @@ class GDecoderLine:
                         case "G":
                             decoded = "Set Units to Millimeters"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # G28: Move to Origin (Home)
             # https://all3dp.com/2/g28-g-code-homing/
@@ -230,7 +237,7 @@ class GDecoderLine:
                             decoded += ", Y axis origin: " + value
                             newY = value
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
 
                 printer.home(newX, newY)
 
@@ -246,7 +253,7 @@ class GDecoderLine:
                             # TODO: What is this doing exactly?
                             decoded = "Mesh-based Z probe"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # G90: Set to Absolute Positioning
             # https://all3dp.com/2/g91-g90-g-code/
@@ -260,7 +267,7 @@ class GDecoderLine:
                             decoded = "Set to Absolute Positioning"
                             printer.setPositioningMode("absolute")
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # G91: Set to Relative Positioning
             # https://all3dp.com/2/g91-g90-g-code/
@@ -274,7 +281,7 @@ class GDecoderLine:
                             decoded = "Set to Relative Positioning"
                             printer.setPositioningMode("relative")
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # G92: Set Position
             case "G92":
@@ -288,7 +295,7 @@ class GDecoderLine:
                         case "G":
                             decoded = "Set Position"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M73: Set/Get build percentage
             case "M73":
@@ -307,7 +314,7 @@ class GDecoderLine:
                         case "S":
                             decoded += ", Remaining in silent mode: " + value + " min."
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M82: Set extruder to absolute mode
             case "M82":
@@ -319,7 +326,7 @@ class GDecoderLine:
                             decoded = "Set extruder to absolute mode"
                             printer.setExtruderMoveMode("absolute")
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M83: Set extruder to relative mode
             case "M83":
@@ -331,7 +338,7 @@ class GDecoderLine:
                             decoded = "Set extruder to relative mode"
                             printer.setExtruderMoveMode("relative")
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M84: Stop idle hold
             case "M84":
@@ -342,7 +349,7 @@ class GDecoderLine:
                         case "M":
                             decoded = "Stop idle hold"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M104: Set Extruder Temperature
             case "M104":
@@ -356,7 +363,7 @@ class GDecoderLine:
                             decoded += ", Target: " + value + " °C"
                             printer.setExtruderTemperature(value)
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M105: Get Extruder Temperature
             case "M105":
@@ -367,7 +374,7 @@ class GDecoderLine:
                         case "M":
                             decoded = "Get Extruder Temperature"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M106: Fan On
             case "M106":
@@ -381,7 +388,7 @@ class GDecoderLine:
                             decoded += ", Fan Speed: " + value + " (0-255)"
                             printer.setFan(value)
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M107: Fan Off
             case "M107":
@@ -393,7 +400,7 @@ class GDecoderLine:
                             decoded = "Fan Off"
                             printer.setFan("0")
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M109: Set Extruder Temperature and Wait
             case "M109":
@@ -407,7 +414,7 @@ class GDecoderLine:
                             decoded += ", Target: " + value + " °C"
                             printer.setExtruderTemperature(value)
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M115: Get Firmware Version and Capabilities
             case "M115":
@@ -420,7 +427,7 @@ class GDecoderLine:
                         case "U":
                             decoded += ", Check the firmware version: " + value
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M117: Display Message
             case "M117":
@@ -438,7 +445,7 @@ class GDecoderLine:
                             decoded += ", Target: " + value + " °C"
                             printer.setBedTemperature(value)
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M190: Wait for bed temperature to reach target temp
             case "M190":
@@ -451,7 +458,7 @@ class GDecoderLine:
                         case "S":
                             decoded += ", Target: " + value + " °C"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M201: Set max acceleration
             case "M201":
@@ -470,12 +477,13 @@ class GDecoderLine:
                         case "Z":
                             decoded += ", Z: " + value + " " + printer.unit + "/s²"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M203: Firmware dependent
             case "M203":
+                decoded = ""
                 if metaInfos.generator != "PrusaSlicer":
-                    self.firmwareDependentButUnknownGenerator(metaInfos, splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 # M203: Set maximum feedrate
                 for token in splitted:
@@ -485,7 +493,7 @@ class GDecoderLine:
                         case "E":
                             decoded += ", E: " + value + " " + printer.unit + "/s²"
                         case "M":
-                            decoded = "Set maximum feedrate"
+                            decoded += "Set maximum feedrate"
                         case "X":
                             decoded += ", X: " + value + " " + printer.unit + "/s²"
                         case "Y":
@@ -493,16 +501,17 @@ class GDecoderLine:
                         case "Z":
                             decoded += ", Z: " + value + " " + printer.unit + "/s²"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M204: Firmware dependent
             # https://reprap.org/wiki/G-code#M204:_Firmware_dependent
             case "M204":
+                decoded = ""
                 if metaInfos.generator != "PrusaSlicer" and metaInfos.generator != "Cura" and metaInfos.generator != "Slic3r":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 if metaInfos.generator == "Cura" and metaInfos.generator_flavor != "Marlin":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded += self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 # M204: Set default acceleration
                 for token in splitted:
@@ -510,7 +519,7 @@ class GDecoderLine:
                     value = token[1:]
                     match key:
                         case "M":
-                            decoded = "Set default acceleration"
+                            decoded += "Set default acceleration"
                         case "P":
                             decoded += ", printing: " + value + " " + printer.unit + "/s²"
                         case "R":
@@ -520,16 +529,17 @@ class GDecoderLine:
                         case "T":
                             decoded += ", travel: " + value + " " + printer.unit + "/s²"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M205: Firmware dependent
             # https://reprap.org/wiki/G-code#M205:_Firmware_dependent
             case "M205":
+                decoded = ""
                 if metaInfos.generator != "PrusaSlicer" and metaInfos.generator != "Cura":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 if metaInfos.generator == "Cura" and metaInfos.generator_flavor != "Marlin":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded += self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 # M205: Advanced Settings
                 for token in splitted:
@@ -539,7 +549,7 @@ class GDecoderLine:
                         case "E":
                             decoded += ", E jerk: " + value + " " + printer.unit + "/s"
                         case "M":
-                            decoded = "Advanced settings"
+                            decoded += "Advanced settings"
                         case "S":
                             decoded += ", min. print speed: " + value + " " + printer.unit + "/s"
                         case "T":
@@ -551,24 +561,25 @@ class GDecoderLine:
                         case "Z":
                             decoded += ", Z Jerk: " + value + " " + printer.unit + "/s"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M221: Set extrude factor override percentage
             case "M221":
+                decoded = ""
                 if metaInfos.generator != "Slic3r" and metaInfos.generator != "PrusaSlicer":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 for token in splitted:
                     key = token[0]
                     value = token[1:]
                     match key:
                         case "M":
-                            decoded = "Set extrude factor override percentage"
+                            decoded += "Set extrude factor override percentage"
                         case "S":
                             decoded += ", Extrude factor override percentage: " + value + " %"
                             # TODO: What is this doing exactly?
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M300: Play beep sound
             case "M300":
@@ -583,42 +594,46 @@ class GDecoderLine:
                         case "S":
                             decoded += ", frequency: " + value + " Hz"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M862.1: Check nozzle diameter (prusa only)
             case "M862.1":
+                decoded = ""
                 if metaInfos.generator != "PrusaSlicer":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
-                return "Check nozzle diameter (prusa only, undecoded): " + str(splitted)
+                return decoded + "Check nozzle diameter (prusa only, undecoded): " + str(splitted)
             # M862.3: Model name (prusa only)
             case "M862.3":
+                decoded = ""
                 if metaInfos.generator != "PrusaSlicer":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
-                return "Model name (prusa only, undecoded): " + str(splitted)
+                return decoded + "Model name (prusa only, undecoded): " + str(splitted)
             # M900 Set Linear Advance Scaling Factors
             # https://marlinfw.org/docs/features/lin_advance.html
             case "M900":
+                decoded = ""
                 if metaInfos.generator != "Slic3r" and metaInfos.generator != "PrusaSlicer":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 for token in splitted:
                     key = token[0]
                     value = token[1:]
                     match key:
                         case "M":
-                            decoded = "Set Linear Advance Scaling Factors"
+                            decoded += "Set Linear Advance Scaling Factors"
                         case "K":
                             decoded += ", Advance K factor: " + value
                             # TODO: What is this doing exactly?
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
             # M907: Set digital trimpot motor current
             case "M907":
+                decoded = ""
                 if metaInfos.generator != "PrusaSlicer":
-                    self.firmwareDependentButUnknownGenerator(splitted)
+                    decoded = self.error_firmwareDependentButUnknownGenerator(metaInfos, splitted) + " "
 
                 for token in splitted:
                     key = token[0]
@@ -632,13 +647,14 @@ class GDecoderLine:
                             elif float(value) <= 2500:
                                 unit = "mA"
                             else:
-                                raise Exception("M907: Invalid value range: " + str(splitted))
+                                decoded += self.error_valueOutOfRange(line, value)
+                                unit = "?"
                             decoded += ", Set E stepper current: " + value + " " + unit
                         case "M":
-                            decoded = "Set digital trimpot motor current"
+                            decoded += "Set digital trimpot motor current"
                         case _:
-                            decoded += self.undecodedGCodeSubtoken(splitted, token)
+                            decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
 
             case _:
-                return self.undecodedGCode(line)
+                return self.error_undecodedGCode(line)
