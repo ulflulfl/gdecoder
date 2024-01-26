@@ -12,15 +12,13 @@ on:
 jobs:
   build:
 
-    # runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         # pythons "match case" is only supported in 3.10 onwards
         python-version: ["3.10", "3.11", "3.12"]
         os: [ubuntu-latest, windows-latest]
-
-    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
@@ -35,7 +33,6 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         pip install -r requirements.txt
-      # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Lint with flake8
       run: |
@@ -45,7 +42,7 @@ jobs:
         # ignore E275 on assert() calls
         flake8 . --count --exit-zero --ignore=E275 --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Test with pytest (incl. coverage.xml)
+    - name: Test with pytest (incl. coverage)
       run: |
         pytest --cov=. --cov-report xml:./coverage.xml
 
