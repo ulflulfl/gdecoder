@@ -3,6 +3,10 @@
 # Limitation:
 # The code expects a single command in each line.
 # It will not work with multiple gcode commands in a single line.
+#
+# Hint: Many gcode details can be found at:
+# https://reprap.org/wiki/G-code
+# https://marlinfw.org/meta/gcode/
 
 
 class GDecoderLine:
@@ -295,13 +299,13 @@ class GDecoderLine:
                         case "M":
                             decoded = "Set/Get build percentage"
                         case "P":
-                            decoded = "Normal mode: " + value + " %"
+                            decoded += ", Normal mode: " + value + " %"
                         case "Q":
-                            decoded = "Silent mode: " + value + " %"
+                            decoded += ", Silent mode: " + value + " %"
                         case "R":
-                            decoded = "Remaining in normal mode: " + value + " min."
+                            decoded += ", Remaining in normal mode: " + value + " min."
                         case "S":
-                            decoded = "Remaining in silent mode: " + value + " min."
+                            decoded += ", Remaining in silent mode: " + value + " min."
                         case _:
                             decoded += self.undecodedGCodeSubtoken(splitted, token)
                 return decoded
