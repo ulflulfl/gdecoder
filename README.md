@@ -22,7 +22,7 @@ Clone or download the repository.
 Common usage:
 
 ```
-gdecoder -i examples_synthetic/generic.gcode
+gdecoder -i README.gcode
 ```
 (showing a synthetic example .gcode)
 
