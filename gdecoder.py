@@ -10,6 +10,7 @@ from FileMetaInfos import FileMetaInfos
 from GDecoderLine import GDecoderLine
 import argparse
 import time
+import sys
 
 
 def getDiff(valueHigh, valueLow):
@@ -218,7 +219,7 @@ def gdecoder(args):
         printSummaryInfos(metaInfos, printer, gcodeCommandCount)
 
 
-if __name__ == '__main__':
+def parse_args(args):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     # TODO: use stdin as default
     parser.add_argument('--input', '-i', help='input gcode file', required="True")
@@ -228,6 +229,9 @@ if __name__ == '__main__':
     parser.add_argument('--decoded', '-d', help='hide gcode decoded output', action='store_true', dest="hideDecoded")
     parser.add_argument('--verbose', '-v', help='show verbose output (can be slow!)', action='store_true', dest="showVerbose")
     parser.add_argument('--undecoded', '-u', help='stop on undecoded gcode', action='store_true', dest="stopOnUndecoded")
-    args = parser.parse_args()
+    return parser.parse_args(args)
 
-    gdecoder(args)
+
+if __name__ == '__main__':
+    parser = parse_args(sys.argv[1:])
+    gdecoder(parser)

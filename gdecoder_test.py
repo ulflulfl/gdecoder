@@ -1,5 +1,6 @@
 # test gdecoder.py with some example files
 from gdecoder import gdecoder
+from gdecoder import parse_args
 import pathlib
 
 
@@ -30,3 +31,27 @@ def test_gcode_in_examples_synthetic_folder(synthetic_inputFile):
     ArgsEmulation = createArgsEmulationWithDefaults(synthetic_inputFile)
     ArgsEmulation.showVerbose = True
     gdecoder(ArgsEmulation)
+
+
+def test_parser_all_optional_parameters_unused():
+    parser = parse_args(['-i', 'abc'])
+
+    assert(parser.input == "abc")
+    assert(parser.hideSummary is False)
+    assert(parser.hideComments is False)
+    assert(parser.hideGCode is False)
+    assert(parser.hideDecoded is False)
+    assert(parser.showVerbose is False)
+    assert(parser.stopOnUndecoded is False)
+
+
+def test_parser_all_optional_parameters_used():
+    parser = parse_args(['-i', 'abc', "-s", "-c", "-g", "-d", "-v", "-u"])
+
+    assert(parser.input == "abc")
+    assert(parser.hideSummary is True)
+    assert(parser.hideComments is True)
+    assert(parser.hideGCode is True)
+    assert(parser.hideDecoded is True)
+    assert(parser.showVerbose is True)
+    assert(parser.stopOnUndecoded is True)
