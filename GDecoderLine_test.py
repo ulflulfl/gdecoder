@@ -27,10 +27,11 @@ def test_decodeGCodeLine_emptyOutput(gcode, expected_decode):
 invalid_gcode_testdata = [
     ("invalid", "", "Unknown gcode: invalid"),
     ("G0 invalidCommand",
-        "Rapid Move, ", "Unknown subtoken: invalidCommand in: ['G0', 'invalidCommand']"),
-    ("G1 invalidCommand", "Linear Move, ", "Unknown subtoken: invalidCommand in: ['G1', 'invalidCommand']"),
-    ("G2 invalidCommand", "Clockwise Arc Move, ", "Unknown subtoken: invalidCommand in: ['G2', 'invalidCommand']"),
-    ("G3 invalidCommand", "Counter-Clockwise Arc Move, ", "Unknown subtoken: invalidCommand in: ['G3', 'invalidCommand']"),
+        "Rapid Move (no print), ", "Unknown subtoken: invalidCommand in: ['G0', 'invalidCommand']"),
+    ("G1 invalidCommand", "Linear Move (print), ", "Unknown subtoken: invalidCommand in: ['G1', 'invalidCommand']"),
+    ("G2 invalidCommand", "Clockwise Arc Move (print), ", "Unknown subtoken: invalidCommand in: ['G2', 'invalidCommand']"),
+    ("G3 invalidCommand",
+        "Counter-Clockwise Arc Move (print), ", "Unknown subtoken: invalidCommand in: ['G3', 'invalidCommand']"),
     ("G4 invalidCommand", "Dwell (aka: Pause), ", "Unknown subtoken: invalidCommand in: ['G4', 'invalidCommand']"),
     ("G21 invalidCommand", "Set Units to Millimeters, ", "Unknown subtoken: invalidCommand in: ['G21', 'invalidCommand']"),
     ("G28 invalidCommand",
@@ -44,7 +45,8 @@ invalid_gcode_testdata = [
         "Set extruder to absolute mode, ", "Unknown subtoken: invalidCommand in: ['M82', 'invalidCommand']"),
     ("M83 invalidCommand",
         "Set extruder to relative mode, ", "Unknown subtoken: invalidCommand in: ['M83', 'invalidCommand']"),
-    ("M84 invalidCommand", "Stop idle hold, ", "Unknown subtoken: invalidCommand in: ['M84', 'invalidCommand']"),
+    ("M84 invalidCommand",
+        "Stop idle hold (disable motors), ", "Unknown subtoken: invalidCommand in: ['M84', 'invalidCommand']"),
     ("M104 invalidCommand", "Set Extruder Temperature, ", "Unknown subtoken: invalidCommand in: ['M104', 'invalidCommand']"),
     ("M105 invalidCommand", "Get Extruder Temperature, ", "Unknown subtoken: invalidCommand in: ['M105', 'invalidCommand']"),
     ("M106 invalidCommand", "Fan On, ", "Unknown subtoken: invalidCommand in: ['M106', 'invalidCommand']"),
@@ -220,10 +222,10 @@ def test_decodeGCodeLine_InvalidGeneratorSpecific_RaisesException():
 
 
 valid_gcode_feedrate_testdata = [
-    ("G0", "Rapid Move"),
-    ("G1", "Linear Move"),
-    ("G2", "Clockwise Arc Move"),
-    ("G3", "Counter-Clockwise Arc Move"),
+    ("G0", "Rapid Move (no print)"),
+    ("G1", "Linear Move (print)"),
+    ("G2", "Clockwise Arc Move (print)"),
+    ("G3", "Counter-Clockwise Arc Move (print)"),
 ]
 
 
@@ -253,7 +255,7 @@ def test_decodeGCodeLine_G0X1Y2Z3_positionOk():
     decoded = decodeLine.decodeGCodeLine(metaInfos, "G0 X1 Y2 Z3", printer)
 
     # assert
-    assert(decoded) == "Rapid Move, X: 1 mm, Y: 2 mm, Z: 3 mm"
+    assert(decoded) == "Rapid Move (no print), X: 1 mm, Y: 2 mm, Z: 3 mm"
     assert(printer.positionX.get()) == "1"
     assert(printer.positionY.get()) == "2"
     assert(printer.positionZ.get()) == "3"
@@ -270,7 +272,7 @@ def test_decodeGCodeLine_G1X1Y2Z3E4_positionOk():
     decoded = decodeLine.decodeGCodeLine(metaInfos, "G1 X1 Y2 Z3 E4", printer)
 
     # assert
-    assert(decoded) == "Linear Move, X: 1 mm, Y: 2 mm, Z: 3 mm, E: 4 mm"
+    assert(decoded) == "Linear Move (print), X: 1 mm, Y: 2 mm, Z: 3 mm, E: 4 mm"
     assert(printer.positionX.get()) == "1"
     assert(printer.positionY.get()) == "2"
     assert(printer.positionZ.get()) == "3"
@@ -288,7 +290,7 @@ def test_decodeGCodeLine_G2X1Y2I3J4E5_positionOk():
     decoded = decodeLine.decodeGCodeLine(metaInfos, "G2 X1 Y2 I3 J4 E5", printer)
 
     # assert
-    assert(decoded) == "Clockwise Arc Move, X:1, Y:2, I (distant X): 3, J (distant Y): 4, E: 5 mm"
+    assert(decoded) == "Clockwise Arc Move (print), X:1, Y:2, I (distant X): 3, J (distant Y): 4, E: 5 mm"
     assert(printer.positionX.get()) == "1"
     assert(printer.positionY.get()) == "2"
     assert(printer.extruderPhysical.get()) == "5.0"
@@ -305,7 +307,7 @@ def test_decodeGCodeLine_G3X1Y2I3J4E5_positionOk():
     decoded = decodeLine.decodeGCodeLine(metaInfos, "G3 X1 Y2 I3 J4 E5", printer)
 
     # assert
-    assert(decoded) == "Counter-Clockwise Arc Move, X:1, Y:2, I (distant X): 3, J (distant Y): 4, E: 5 mm"
+    assert(decoded) == "Counter-Clockwise Arc Move (print), X:1, Y:2, I (distant X): 3, J (distant Y): 4, E: 5 mm"
     assert(printer.positionX.get()) == "1"
     assert(printer.positionY.get()) == "2"
     assert(printer.extruderPhysical.get()) == "5.0"
@@ -324,10 +326,10 @@ simple_gcode_testdata = [
     ("M73 P1 Q2 R3 S4",
         "Set/Get build percentage, " +
         "Normal mode: 1 %, Silent mode: 2 %, Remaining in normal mode: 3 min., Remaining in silent mode: 4 min."),
-    ("M84", "Stop idle hold"),
+    ("M84", "Stop idle hold (disable motors)"),
     ("M105", "Get Extruder Temperature"),
     ("M115 U1", "Get Firmware Version and Capabilities, Check the firmware version: 1"),
-    ("M117 Message to be displayed", "Display Message: Message to be displayed"),
+    ("M117 Message to be displayed", "Display Message: \"Message to be displayed\""),
     ("M190 S50", "Wait for bed temperature to reach target temp, Target: 50 °C"),
     ("M201 X1 Y2 Z3 E4", "Set max acceleration, X: 1 mm/s², Y: 2 mm/s², Z: 3 mm/s², E: 4 mm/s²"),
     ("M300 P1 S2", "Play beep sound, duration: 1 ms, frequency: 2 Hz"),

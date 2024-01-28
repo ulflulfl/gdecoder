@@ -32,8 +32,6 @@ For a list of available options:
 gdecoder -h
 ```
 
-
-
 ## Tests
 
 Automated tests can be found in the GitHub Actions, including: flake8 (lint), pytest and coverage (pushed to https://app.codecov.io/gh/ulflulfl/gdecoder).

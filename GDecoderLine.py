@@ -70,7 +70,7 @@ class GDecoderLine:
                             decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
-                            decoded = "Rapid Move"
+                            decoded = "Rapid Move (no print)"
                         case "X":
                             decoded += ", X: " + value + " " + printer.unit
                             x = value
@@ -104,7 +104,7 @@ class GDecoderLine:
                             decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
-                            decoded = "Linear Move"
+                            decoded = "Linear Move (print)"
                         case "X":
                             decoded += ", X: " + value + " " + printer.unit
                             x = value
@@ -138,7 +138,7 @@ class GDecoderLine:
                             decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
-                            decoded = "Clockwise Arc Move"
+                            decoded = "Clockwise Arc Move (print)"
                         case "I":
                             decoded += ", I (distant X): " + value
                             i = value
@@ -174,7 +174,7 @@ class GDecoderLine:
                             decoded += ", Feedrate: " + value + " " + printer.unit + "/min"
                             printer.setFeedrate(value)
                         case "G":
-                            decoded = "Counter-Clockwise Arc Move"
+                            decoded = "Counter-Clockwise Arc Move (print)"
                         case "I":
                             decoded += ", I (distant X): " + value
                             i = value
@@ -347,7 +347,7 @@ class GDecoderLine:
                     value = token[1:]
                     match key:
                         case "M":
-                            decoded = "Stop idle hold"
+                            decoded = "Stop idle hold (disable motors)"
                         case _:
                             decoded += self.error_undecodedGCodeSubtoken(splitted, token)
                 return decoded
@@ -431,7 +431,7 @@ class GDecoderLine:
                 return decoded
             # M117: Display Message
             case "M117":
-                decoded = "Display Message: " + line[5:]
+                decoded = "Display Message: \"" + line[5:] + "\""
                 return decoded
             # M140: Set Bed Temperature (Fast)
             case "M140":
