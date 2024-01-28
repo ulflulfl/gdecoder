@@ -34,6 +34,8 @@ gdecoder -h
 
 ## Example Output
 
+Output from the minimalistic [README.gcode](README.gcode) example:
+
 ```
 >gdecoder -i README.gcode
 ; example comment
