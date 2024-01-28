@@ -20,7 +20,7 @@ def getDiff(valueHigh, valueLow):
         return "?"
 
 
-def printModelInfos(printer):
+def printPrinterModel(printer):
     diffX = getDiff(printer.printPositionX.getMax(), printer.printPositionX.getMin())
     diffY = getDiff(printer.printPositionY.getMax(), printer.printPositionY.getMin())
     diffZ = getDiff(printer.printPositionZ.getMax(), printer.printPositionZ.getMin())
@@ -98,8 +98,14 @@ def isFilamentSuitableForTemp(filament, tempNozzle, tempBed):
     bedMax = filament[8]
     bedMandatory = filament[9]
 
-    tempNozzleInt = int(tempNozzle)
-    tempBedInt = int(tempBed)
+    if tempNozzle.isdigit():
+        tempNozzleInt = int(tempNozzle)
+    else:
+        tempNozzleInt = 0
+    if tempBed.isdigit():
+        tempBedInt = int(tempBed)
+    else:
+        tempBedInt = 0
 
     # check nozzle temp
     if tempNozzleInt < nozzleMin or tempNozzleInt > nozzleMax:
@@ -185,16 +191,31 @@ def readGCode(args, metaInfos, decodeLine, printer):
             formatstr = "{:" + str(metaInfos.longestLine + 1) + "}"
             print(formatstr.format(line.strip()), end="")
 
-        if args.hideDecoded is False:
+        if args.hideDecoded is False and decoded != "":
             print(' ; ' + decoded)
         else:
             if args.hideGCode is False:
                 print()
 
         if args.showVerbose is True:
-            printModelInfos(printer)
+            printPrinterModel(printer)
 
     return gcodeCommandCount
+
+
+def gdecoder(args):
+    printer = PrinterModel()
+
+    metaInfos = FileMetaInfos()
+    metaInfos.readMetaInfos(args.input)
+
+    decodeLine = GDecoderLine()
+    decodeLine.stopOnUndecoded = args.stopOnUndecoded
+
+    gcodeCommandCount = readGCode(args, metaInfos, decodeLine, printer)
+
+    if args.hideSummary is False:
+        printSummaryInfos(metaInfos, printer, gcodeCommandCount)
 
 
 if __name__ == '__main__':
@@ -209,15 +230,4 @@ if __name__ == '__main__':
     parser.add_argument('--undecoded', '-u', help='stop on undecoded gcode', action='store_true', dest="stopOnUndecoded")
     args = parser.parse_args()
 
-    printer = PrinterModel()
-
-    metaInfos = FileMetaInfos()
-    metaInfos.readMetaInfos(args.input)
-
-    decodeLine = GDecoderLine()
-    decodeLine.stopOnUndecoded = args.stopOnUndecoded
-
-    gcodeCommandCount = readGCode(args, metaInfos, decodeLine, printer)
-
-    if args.hideSummary is False:
-        printSummaryInfos(metaInfos, printer, gcodeCommandCount)
+    gdecoder(args)
