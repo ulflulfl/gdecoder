@@ -22,8 +22,9 @@ Clone or download the repository.
 Common usage:
 
 ```
-gdecoder -i filename.gcode
+gdecoder -i examples_synthetic/generic.gcode
 ```
+(showing a synthetic example .gcode)
 
 For a list of available options:
 
