@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.unittests
 from GDecoderLine import GDecoderLine
 from PrinterModel import PrinterModel
 from FileMetaInfos import FileMetaInfos

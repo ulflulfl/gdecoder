@@ -1,4 +1,6 @@
 from PrinterModelValue import PrinterModelValue
+import pytest
+pytestmark = pytest.mark.unittests
 
 
 def test_get_InitialQuestionMark():

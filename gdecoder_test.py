@@ -2,6 +2,8 @@
 from gdecoder import gdecoder
 from gdecoder import parse_args
 import pathlib
+import pytest
+pytestmark = pytest.mark.integration
 
 
 def createArgsEmulationWithDefaults(inputFile):

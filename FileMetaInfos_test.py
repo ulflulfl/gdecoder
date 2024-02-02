@@ -1,4 +1,6 @@
 from FileMetaInfos import FileMetaInfos
+import pytest
+pytestmark = pytest.mark.unittests
 
 
 def test_decodeCommentLine_Cura():

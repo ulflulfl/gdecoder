@@ -1,4 +1,6 @@
 from PrinterModel import PrinterModel
+import pytest
+pytestmark = pytest.mark.unittests
 
 
 def test_setBedTemperature():

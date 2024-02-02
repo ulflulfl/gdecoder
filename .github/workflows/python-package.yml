@@ -42,11 +42,24 @@ jobs:
         # ignore E275 on assert() calls
         flake8 . --count --exit-zero --ignore=E275,W504 --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Test with pytest (incl. coverage)
+    - name: Unit tests with pytest (incl. coverage)
       run: |
-        pytest --cov=. --cov-report xml:./coverage.xml
+        pytest --cov=. --cov-report xml:./coverage.xml -m unittests
 
-    - name: Upload coverage reports to codecov.io
+    - name: Upload unit test coverage reports to codecov.io
       uses: codecov/codecov-action@v3
+      with:
+        flags: unittests
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Integration tests with pytest (incl. coverage)
+      run: |
+        pytest --cov=. --cov-report xml:./coverage.xml -m integration
+
+    - name: Upload integration tests coverage reports to codecov.io
+      uses: codecov/codecov-action@v3
+      with:
+        flags: integration
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

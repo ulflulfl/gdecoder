@@ -1,5 +1,6 @@
 from PrinterModel import PrinterModel
 import pytest
+pytestmark = pytest.mark.unittests
 
 
 def test_printX_AbsoluteMode_XPositionsOk():
