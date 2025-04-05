@@ -9,13 +9,13 @@ class FileMetaInfos:
     generator_line = ""
     generator_flavor = ""
 
-    fileName = ""
-    fileSize = 0
-    modifiedTime = ""
-    longestLine = 0
-    lineCount = 0
+    file_name = ""
+    file_size = 0
+    modified_time = ""
+    longest_line = 0
+    line_count = 0
 
-    def _decodeCommentLine(self, line):
+    def _decode_comment_line(self, line):
         if "Generated with Cura_SteamEngine" in line:
             self.generator_line = line
             self.generator = "Cura"
@@ -35,26 +35,26 @@ class FileMetaInfos:
             self.generator = "PrusaSlicer"
             return
 
-    def _decodeLine(self, line):
-        currentLen = len(line)
-        strippedLine = line.strip()
+    def _decode_line(self, line):
+        current_len = len(line)
+        stripped_line = line.strip()
 
-        if strippedLine.startswith(";"):
-            self._decodeCommentLine(strippedLine)
+        if stripped_line.startswith(";"):
+            self._decode_comment_line(stripped_line)
         else:
-            if currentLen > self.longestLine and len(strippedLine) > 0:
-                self.longestLine = currentLen
+            if current_len > self.longest_line and len(stripped_line) > 0:
+                self.longest_line = current_len
 
-    def readMetaInfos(self, fileName):
-        self.fileName = fileName
+    def read_meta_infos(self, file_name):
+        self.file_name = file_name
 
-        file1 = open(fileName, 'r', encoding='utf-8')
-        Lines = file1.readlines()
+        file1 = open(file_name, 'r', encoding='utf-8')
+        lines = file1.readlines()
 
-        self.fileSize = os.path.getsize(fileName)
-        self.modifiedTime = os.path.getmtime(fileName)
+        self.file_size = os.path.getsize(file_name)
+        self.modified_time = os.path.getmtime(file_name)
 
-        for line in Lines:
-            self.lineCount += 1
+        for line in lines:
+            self.line_count += 1
 
-            self._decodeLine(line)
+            self._decode_line(line)

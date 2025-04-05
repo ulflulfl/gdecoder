@@ -3,98 +3,98 @@ import pytest
 pytestmark = pytest.mark.unittests
 
 
-def test_get_InitialQuestionMark():
+def test_get_initial_question_mark():
     # arrange
-    printerValue = PrinterModelValue()
+    printer_value = PrinterModelValue()
 
     # act
-    value = printerValue.get()
+    value = printer_value.get()
 
     # assert
     assert(value) == "?"
 
 
-def test_set_ValueOk():
+def test_set_value_ok():
     # arrange
-    printerValue = PrinterModelValue()
-    assert(printerValue.get()) == "?"
+    printer_value = PrinterModelValue()
+    assert(printer_value.get()) == "?"
 
     # act / assert
-    printerValue.set("100")
-    assert(printerValue.get()) == "100"
+    printer_value.set("100")
+    assert(printer_value.get()) == "100"
 
 
-def test_set_MaxInitialOk():
+def test_set_max_initial_ok():
     # arrange
-    printerValue = PrinterModelValue()
-    assert(printerValue.getMax()) == "?"
+    printer_value = PrinterModelValue()
+    assert(printer_value.get_max()) == "?"
 
     # act
-    printerValue.set("100")
+    printer_value.set("100")
 
     # assert
-    assert(printerValue.getMax()) == "100"
+    assert(printer_value.get_max()) == "100"
 
 
-def test_set_MaxSecondTimeOk():
+def test_set_max_second_time_ok():
     # arrange
-    printerValue = PrinterModelValue()
-    printerValue.set("100")
-    assert(printerValue.getMax()) == "100"
+    printer_value = PrinterModelValue()
+    printer_value.set("100")
+    assert(printer_value.get_max()) == "100"
 
     # act
-    printerValue.set("110")
+    printer_value.set("110")
 
     # assert
-    assert(printerValue.getMax()) == "110"
+    assert(printer_value.get_max()) == "110"
 
 
-def test_set_MaxKeptOnLowerValue():
+def test_set_max_kept_on_lower_value():
     # arrange
-    printerValue = PrinterModelValue()
-    printerValue.set("100")
-    assert(printerValue.getMax()) == "100"
+    printer_value = PrinterModelValue()
+    printer_value.set("100")
+    assert(printer_value.get_max()) == "100"
 
     # act
-    printerValue.set("80")
+    printer_value.set("80")
 
     # assert
-    assert(printerValue.getMax()) == "100"
+    assert(printer_value.get_max()) == "100"
 
 
-def test_set_MinInitialOk():
+def test_set_min_initial_ok():
     # arrange
-    printerValue = PrinterModelValue()
-    assert(printerValue.getMin()) == "?"
+    printer_value = PrinterModelValue()
+    assert(printer_value.get_min()) == "?"
 
     # act
-    printerValue.set("100")
+    printer_value.set("100")
 
     # assert
-    assert(printerValue.getMin()) == "100"
+    assert(printer_value.get_min()) == "100"
 
 
-def test_set_MinSecondTimeOk():
+def test_set_min_second_time_ok():
     # arrange
-    printerValue = PrinterModelValue()
-    printerValue.set("100")
-    assert(printerValue.getMin()) == "100"
+    printer_value = PrinterModelValue()
+    printer_value.set("100")
+    assert(printer_value.get_min()) == "100"
 
     # act
-    printerValue.set("90")
+    printer_value.set("90")
 
     # assert
-    assert(printerValue.getMin()) == "90"
+    assert(printer_value.get_min()) == "90"
 
 
-def test_set_MinKeptOnHigherValue():
+def test_set_min_kept_on_higher_value():
     # arrange
-    printerValue = PrinterModelValue()
-    printerValue.set("100")
-    assert(printerValue.getMin()) == "100"
+    printer_value = PrinterModelValue()
+    printer_value.set("100")
+    assert(printer_value.get_min()) == "100"
 
     # act
-    printerValue.set("120")
+    printer_value.set("120")
 
     # assert
-    assert(printerValue.getMin()) == "100"
+    assert(printer_value.get_min()) == "100"

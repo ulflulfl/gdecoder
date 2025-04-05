@@ -6,10 +6,10 @@ import pytest
 pytestmark = pytest.mark.integration
 
 
-def createArgsEmulationWithDefaults(inputFile):
+def create_args_emulation_with_defaults(input_file):
     class ArgsEmulation:
         pass
-    ArgsEmulation.input = str(inputFile)
+    ArgsEmulation.input = str(input_file)
 
     # settings for maximum output -> crashes becomes most likely in the test
     ArgsEmulation.stopOnUndecoded = True
@@ -25,14 +25,14 @@ def createArgsEmulationWithDefaults(inputFile):
 
 # test all .gcode files in the examples_synthetic folder
 def pytest_generate_tests(metafunc):
-    if "synthetic_inputFile" in metafunc.fixturenames:
-        metafunc.parametrize("synthetic_inputFile", pathlib.Path().glob("./examples_synthetic/*.gcode"))
+    if "synthetic_input_file" in metafunc.fixturenames:
+        metafunc.parametrize("synthetic_input_file", pathlib.Path().glob("./examples_synthetic/*.gcode"))
 
 
-def test_gcode_in_examples_synthetic_folder(synthetic_inputFile):
-    ArgsEmulation = createArgsEmulationWithDefaults(synthetic_inputFile)
-    ArgsEmulation.showVerbose = True
-    gdecoder(ArgsEmulation)
+def test_gcode_in_examples_synthetic_folder(synthetic_input_file):
+    args_emulation = create_args_emulation_with_defaults(synthetic_input_file)
+    args_emulation.showVerbose = True
+    gdecoder(args_emulation)
 
 
 def test_parser_all_optional_parameters_unused():

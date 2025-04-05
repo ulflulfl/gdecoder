@@ -3,37 +3,37 @@ import pytest
 pytestmark = pytest.mark.unittests
 
 
-def test_setBedTemperature():
+def test_set_bed_temperature():
     # arrange
     printer = PrinterModel()
-    assert(printer.bedTemp.get()) == "?"
+    assert(printer.bed_temp.get()) == "?"
 
     # act
-    printer.setBedTemperature("100")
+    printer.set_bed_temperature("100")
 
     # assert
-    assert(printer.bedTemp.get()) == "100"
+    assert(printer.bed_temp.get()) == "100"
 
 
-def test_setExtruderTemperature():
+def test_set_extruder_temperature():
     # arrange
     printer = PrinterModel()
-    assert(printer.extruderTemp.get()) == "?"
+    assert(printer.extruder_temp.get()) == "?"
 
     # act
-    printer.setExtruderTemperature("100")
+    printer.set_extruder_temperature("100")
 
     # assert
-    assert(printer.extruderTemp.get()) == "100"
+    assert(printer.extruder_temp.get()) == "100"
 
 
-def test_setFan():
+def test_set_fan():
     # arrange
     printer = PrinterModel()
     assert(printer.fan.get()) == "?"
 
     # act
-    printer.setFan("100")
+    printer.set_fan("100")
 
     # assert
     assert(printer.fan.get()) == "100"

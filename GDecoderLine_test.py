@@ -1,8 +1,8 @@
-import pytest
-pytestmark = pytest.mark.unittests
 from GDecoderLine import GDecoderLine
 from PrinterModel import PrinterModel
 from FileMetaInfos import FileMetaInfos
+import pytest
+pytestmark = pytest.mark.unittests
 
 
 gcode_empty_testdata = [
@@ -12,14 +12,14 @@ gcode_empty_testdata = [
 
 
 @pytest.mark.parametrize("gcode,expected_decode", gcode_empty_testdata)
-def test_decodeGCodeLine_emptyOutput(gcode, expected_decode):
+def test_decode_gcode_line_empty_output(gcode, expected_decode):
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, gcode, printer)
 
     # assert
     assert(decoded) == expected_decode
@@ -27,68 +27,84 @@ def test_decodeGCodeLine_emptyOutput(gcode, expected_decode):
 
 invalid_gcode_testdata = [
     ("invalid", "", "Unknown gcode: invalid"),
-    ("G0 invalidCommand",
-        "Rapid Move (no print), ", "Unknown subtoken: invalidCommand in: ['G0', 'invalidCommand']"),
-    ("G1 invalidCommand", "Linear Move (print), ", "Unknown subtoken: invalidCommand in: ['G1', 'invalidCommand']"),
-    ("G2 invalidCommand", "Clockwise Arc Move (print), ", "Unknown subtoken: invalidCommand in: ['G2', 'invalidCommand']"),
-    ("G3 invalidCommand",
-        "Counter-Clockwise Arc Move (print), ", "Unknown subtoken: invalidCommand in: ['G3', 'invalidCommand']"),
-    ("G4 invalidCommand", "Dwell (aka: Pause), ", "Unknown subtoken: invalidCommand in: ['G4', 'invalidCommand']"),
-    ("G21 invalidCommand", "Set Units to Millimeters, ", "Unknown subtoken: invalidCommand in: ['G21', 'invalidCommand']"),
-    ("G28 invalidCommand",
-        "Move to Origin (Home, often: X=0, Y=0; Z=0), ", "Unknown subtoken: invalidCommand in: ['G28', 'invalidCommand']"),
-    ("G80 invalidCommand", "Mesh-based Z probe, ", "Unknown subtoken: invalidCommand in: ['G80', 'invalidCommand']"),
-    ("G90 invalidCommand", "Set to Absolute Positioning, ", "Unknown subtoken: invalidCommand in: ['G90', 'invalidCommand']"),
-    ("G91 invalidCommand", "Set to Relative Positioning, ", "Unknown subtoken: invalidCommand in: ['G91', 'invalidCommand']"),
-    ("G92 invalidCommand", "Set Position, ", "Unknown subtoken: invalidCommand in: ['G92', 'invalidCommand']"),
-    ("M73 invalidCommand", "Set/Get build percentage, ", "Unknown subtoken: invalidCommand in: ['M73', 'invalidCommand']"),
-    ("M82 invalidCommand",
-        "Set extruder to absolute mode, ", "Unknown subtoken: invalidCommand in: ['M82', 'invalidCommand']"),
-    ("M83 invalidCommand",
-        "Set extruder to relative mode, ", "Unknown subtoken: invalidCommand in: ['M83', 'invalidCommand']"),
-    ("M84 invalidCommand",
-        "Stop idle hold (disable motors), ", "Unknown subtoken: invalidCommand in: ['M84', 'invalidCommand']"),
-    ("M104 invalidCommand", "Set Extruder Temperature, ", "Unknown subtoken: invalidCommand in: ['M104', 'invalidCommand']"),
-    ("M105 invalidCommand", "Get Extruder Temperature, ", "Unknown subtoken: invalidCommand in: ['M105', 'invalidCommand']"),
-    ("M106 invalidCommand", "Fan On, ", "Unknown subtoken: invalidCommand in: ['M106', 'invalidCommand']"),
-    ("M107 invalidCommand", "Fan Off, ", "Unknown subtoken: invalidCommand in: ['M107', 'invalidCommand']"),
-    ("M109 invalidCommand",
-        "Set Extruder Temperature and Wait, ", "Unknown subtoken: invalidCommand in: ['M109', 'invalidCommand']"),
-    ("M115 invalidCommand",
-        "Get Firmware Version and Capabilities, ", "Unknown subtoken: invalidCommand in: ['M115', 'invalidCommand']"),
-    ("M140 invalidCommand", "Set Bed Temperature (Fast), ", "Unknown subtoken: invalidCommand in: ['M140', 'invalidCommand']"),
-    ("M190 invalidCommand",
-        "Wait for bed temperature to reach target temp, ", "Unknown subtoken: invalidCommand in: ['M190', 'invalidCommand']"),
-    ("M201 invalidCommand", "Set max acceleration, ", "Unknown subtoken: invalidCommand in: ['M201', 'invalidCommand']"),
-    ("M300 invalidCommand", "Play beep sound, ", "Unknown subtoken: invalidCommand in: ['M300', 'invalidCommand']"),
+    ("G0 invalidCommand", "Rapid Move (no print), ",
+        "Unknown subtoken: invalidCommand in: ['G0', 'invalidCommand']"),
+    ("G1 invalidCommand", "Linear Move (print), ",
+        "Unknown subtoken: invalidCommand in: ['G1', 'invalidCommand']"),
+    ("G2 invalidCommand", "Clockwise Arc Move (print), ",
+        "Unknown subtoken: invalidCommand in: ['G2', 'invalidCommand']"),
+    ("G3 invalidCommand", "Counter-Clockwise Arc Move (print), ",
+        "Unknown subtoken: invalidCommand in: ['G3', 'invalidCommand']"),
+    ("G4 invalidCommand", "Dwell (aka: Pause), ",
+        "Unknown subtoken: invalidCommand in: ['G4', 'invalidCommand']"),
+    ("G21 invalidCommand", "Set Units to Millimeters, ",
+        "Unknown subtoken: invalidCommand in: ['G21', 'invalidCommand']"),
+    ("G28 invalidCommand", "Move to Origin (Home, often: X=0, Y=0; Z=0), ",
+        "Unknown subtoken: invalidCommand in: ['G28', 'invalidCommand']"),
+    ("G80 invalidCommand", "Mesh-based Z probe, ",
+        "Unknown subtoken: invalidCommand in: ['G80', 'invalidCommand']"),
+    ("G90 invalidCommand", "Set to Absolute Positioning, ",
+        "Unknown subtoken: invalidCommand in: ['G90', 'invalidCommand']"),
+    ("G91 invalidCommand", "Set to Relative Positioning, ",
+        "Unknown subtoken: invalidCommand in: ['G91', 'invalidCommand']"),
+    ("G92 invalidCommand", "Set Position, ",
+        "Unknown subtoken: invalidCommand in: ['G92', 'invalidCommand']"),
+    ("M73 invalidCommand", "Set/Get build percentage, ",
+        "Unknown subtoken: invalidCommand in: ['M73', 'invalidCommand']"),
+    ("M82 invalidCommand", "Set extruder to absolute mode, ",
+        "Unknown subtoken: invalidCommand in: ['M82', 'invalidCommand']"),
+    ("M83 invalidCommand", "Set extruder to relative mode, ",
+        "Unknown subtoken: invalidCommand in: ['M83', 'invalidCommand']"),
+    ("M84 invalidCommand", "Stop idle hold (disable motors), ",
+        "Unknown subtoken: invalidCommand in: ['M84', 'invalidCommand']"),
+    ("M104 invalidCommand", "Set Extruder Temperature, ",
+        "Unknown subtoken: invalidCommand in: ['M104', 'invalidCommand']"),
+    ("M105 invalidCommand", "Get Extruder Temperature, ",
+        "Unknown subtoken: invalidCommand in: ['M105', 'invalidCommand']"),
+    ("M106 invalidCommand", "Fan On, ",
+        "Unknown subtoken: invalidCommand in: ['M106', 'invalidCommand']"),
+    ("M107 invalidCommand", "Fan Off, ",
+        "Unknown subtoken: invalidCommand in: ['M107', 'invalidCommand']"),
+    ("M109 invalidCommand", "Set Extruder Temperature and Wait, ",
+        "Unknown subtoken: invalidCommand in: ['M109', 'invalidCommand']"),
+    ("M115 invalidCommand", "Get Firmware Version and Capabilities, ",
+        "Unknown subtoken: invalidCommand in: ['M115', 'invalidCommand']"),
+    ("M140 invalidCommand", "Set Bed Temperature (Fast), ",
+        "Unknown subtoken: invalidCommand in: ['M140', 'invalidCommand']"),
+    ("M190 invalidCommand", "Wait for bed temperature to reach target temp, ",
+        "Unknown subtoken: invalidCommand in: ['M190', 'invalidCommand']"),
+    ("M201 invalidCommand", "Set max acceleration, ",
+        "Unknown subtoken: invalidCommand in: ['M201', 'invalidCommand']"),
+    ("M300 invalidCommand", "Play beep sound, ",
+        "Unknown subtoken: invalidCommand in: ['M300', 'invalidCommand']"),
 ]
 
 
 @pytest.mark.parametrize("gcode,expected_decode,expected_message", invalid_gcode_testdata)
-def test_decodeGCodeLine_InvalidCommand_ErrorMessage(gcode, expected_decode, expected_message):
+def test_decode_gcode_line_invalid_command_error_message(gcode, expected_decode, expected_message):
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, gcode, printer)
 
     # assert
     assert(decoded) == expected_decode + expected_message
 
 
 @pytest.mark.parametrize("gcode,expected_decode,expected_message", invalid_gcode_testdata)
-def test_decodeGCodeLine_invalidCommand_raisesException(gcode, expected_decode, expected_message):
+def test_decode_gcode_line_invalid_command_raises_exception(gcode, expected_decode, expected_message):
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
-    decodeLine.stopOnUndecoded = True
+    decode_line = GDecoderLine()
+    decode_line.stop_on_undecoded = True
 
     # act
     with pytest.raises(Exception) as e_info:
-        decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+        decode_line.decode_gcode_line(meta_infos, gcode, printer)
 
     # assert
     exception_msg = e_info.value.args[0]
@@ -101,23 +117,25 @@ generator_specific_gcode_testdata = [
     ("M203 invalidCommand",
         "PrusaSlicer", "Set maximum feedrate, Unknown subtoken: invalidCommand in: ['M203', 'invalidCommand']"),
     ("M204 P1 R2 S3 T4",
-        "PrusaSlicer", "Set default acceleration, printing: 1 mm/s², retract: 2 mm/s², normal: 3 mm/s², travel: 4 mm/s²"),
+        "PrusaSlicer", "Set default acceleration, "
+        "printing: 1 mm/s², retract: 2 mm/s², normal: 3 mm/s², travel: 4 mm/s²"),
     ("M204 invalidCommand",
         "PrusaSlicer", "Set default acceleration, Unknown subtoken: invalidCommand in: ['M204', 'invalidCommand']"),
     ("M205 X1 Y2 Z3 S4 T5 E6",
-        "PrusaSlicer", "Advanced settings, X Jerk: 1 mm/s, Y Jerk: 2 mm/s, Z Jerk: 3 mm/s, " +
+        "PrusaSlicer", "Advanced settings, X Jerk: 1 mm/s, Y Jerk: 2 mm/s, Z Jerk: 3 mm/s, "
         "min. print speed: 4 mm/s, min. travel speed: 5 mm/s, E jerk: 6 mm/s"),
     ("M205 invalidCommand",
         "PrusaSlicer", "Advanced settings, Unknown subtoken: invalidCommand in: ['M205', 'invalidCommand']"),
     ("M221 S1", "PrusaSlicer",
         "Set extrude factor override percentage, Extrude factor override percentage: 1 %"),
     ("M221 invalidCommand",
-        "PrusaSlicer", "Set extrude factor override percentage, " +
+        "PrusaSlicer", "Set extrude factor override percentage, "
         "Unknown subtoken: invalidCommand in: ['M221', 'invalidCommand']"),
     ("M900 K1", "PrusaSlicer",
         "Set Linear Advance Scaling Factors, Advance K factor: 1"),
     ("M900 invalidCommand",
-        "PrusaSlicer", "Set Linear Advance Scaling Factors, Unknown subtoken: invalidCommand in: ['M900', 'invalidCommand']"),
+        "PrusaSlicer", "Set Linear Advance Scaling Factors, "
+        "Unknown subtoken: invalidCommand in: ['M900', 'invalidCommand']"),
     ("M907 E1", "PrusaSlicer",
         "Set digital trimpot motor current, Set E stepper current: 1 A"),
     ("M907 E100", "PrusaSlicer",
@@ -132,31 +150,31 @@ generator_specific_gcode_testdata = [
 
 
 @pytest.mark.parametrize("gcode,generator,expected_message", generator_specific_gcode_testdata)
-def test_decodeGCodeLine_GeneratorSpecific_Message(gcode, generator, expected_message):
+def test_decode_gcode_line_generator_specific_message(gcode, generator, expected_message):
     # arrange
-    metaInfos = FileMetaInfos()
-    metaInfos.generator = generator
+    meta_infos = FileMetaInfos()
+    meta_infos.generator = generator
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, gcode, printer)
 
     # assert
     assert(decoded) == expected_message
 
 
-def test_decodeGCodeLine_GeneratorSpecificOutOfRange_RaisesException():
+def test_decode_gcode_line_generator_specific_out_of_range_raises_exception():
     # arrange
-    metaInfos = FileMetaInfos()
-    metaInfos.generator = "PrusaSlicer"
+    meta_infos = FileMetaInfos()
+    meta_infos.generator = "PrusaSlicer"
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
-    decodeLine.stopOnUndecoded = True
+    decode_line = GDecoderLine()
+    decode_line.stop_on_undecoded = True
 
     # act
     with pytest.raises(Exception) as e_info:
-        decodeLine.decodeGCodeLine(metaInfos, "M907 E10000", printer)
+        decode_line.decode_gcode_line(meta_infos, "M907 E10000", printer)
 
     # assert
     exception_msg = e_info.value.args[0]
@@ -189,15 +207,15 @@ generator_specific_gcode_wrong_generator_testdata = [
 
 
 @pytest.mark.parametrize("gcode,generator,expected_message", generator_specific_gcode_wrong_generator_testdata)
-def test_decodeGCodeLine_InvalidGeneratorSpecific_ErrorMessage(gcode, generator, expected_message):
+def test_decode_gcode_line_invalid_generator_specific_error_message(gcode, generator, expected_message):
     # arrange
-    metaInfos = FileMetaInfos()
-    metaInfos.generator = generator
+    meta_infos = FileMetaInfos()
+    meta_infos.generator = generator
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, gcode, printer)
 
     # assert
     assert(decoded) == "Uexpected generator " + generator + " for firmware dependent: " + expected_message
@@ -205,17 +223,17 @@ def test_decodeGCodeLine_InvalidGeneratorSpecific_ErrorMessage(gcode, generator,
 
 # We've checked all the invalid generator messages already above,
 # only check here if an Exception is raised if stopOnUndecoded is True
-def test_decodeGCodeLine_InvalidGeneratorSpecific_RaisesException():
+def test_decode_gcode_line_invalid_generator_specific_raises_exception():
     # arrange
-    metaInfos = FileMetaInfos()
-    metaInfos.generator = "abc"
+    meta_infos = FileMetaInfos()
+    meta_infos.generator = "abc"
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
-    decodeLine.stopOnUndecoded = True
+    decode_line = GDecoderLine()
+    decode_line.stop_on_undecoded = True
 
     # act
     with pytest.raises(Exception) as e_info:
-        decodeLine.decodeGCodeLine(metaInfos, "M203", printer)
+        decode_line.decode_gcode_line(meta_infos, "M203", printer)
 
     # assert
     exception_msg = e_info.value.args[0]
@@ -231,101 +249,101 @@ valid_gcode_feedrate_testdata = [
 
 
 @pytest.mark.parametrize("gcode,expected_decode_part", valid_gcode_feedrate_testdata)
-def test_decodeGCodeLine_validCommandWithFeedrate_expectedFeedrate(gcode, expected_decode_part):
+def test_decode_gcode_line_valid_command_with_feedrate_expected_feedrate(gcode, expected_decode_part):
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode + " F100", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, gcode + " F100", printer)
 
     # assert
     assert(decoded) == expected_decode_part + ", Feedrate: 100 mm/min"
     assert(printer.feedrate) == "100"
 
 
-def test_decodeGCodeLine_G0X1Y2Z3_positionOk():
+def test_decode_gcode_line_g0_x1_y2_z3_position_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
     printer.home("", "")
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G0 X1 Y2 Z3", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "G0 X1 Y2 Z3", printer)
 
     # assert
     assert(decoded) == "Rapid Move (no print), X: 1 mm, Y: 2 mm, Z: 3 mm"
-    assert(printer.positionX.get()) == "1"
-    assert(printer.positionY.get()) == "2"
-    assert(printer.positionZ.get()) == "3"
+    assert(printer.position_x.get()) == "1"
+    assert(printer.position_y.get()) == "2"
+    assert(printer.position_z.get()) == "3"
 
 
-def test_decodeGCodeLine_G1X1Y2Z3E4_positionOk():
+def test_decode_gcode_line_g1_x1_y2_z3_e4_position_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
     printer.home("", "")
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G1 X1 Y2 Z3 E4", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "G1 X1 Y2 Z3 E4", printer)
 
     # assert
     assert(decoded) == "Linear Move (print), X: 1 mm, Y: 2 mm, Z: 3 mm, E: 4 mm"
-    assert(printer.positionX.get()) == "1"
-    assert(printer.positionY.get()) == "2"
-    assert(printer.positionZ.get()) == "3"
-    assert(printer.extruderPhysical.get()) == "4.0"
+    assert(printer.position_x.get()) == "1"
+    assert(printer.position_y.get()) == "2"
+    assert(printer.position_z.get()) == "3"
+    assert(printer.extruder_physical.get()) == "4.0"
 
 
-def test_decodeGCodeLine_G2X1Y2I3J4E5_positionOk():
+def test_decode_gcode_line_g2_x1_y2_i3_j4_e5_position_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
     printer.home("", "")
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G2 X1 Y2 I3 J4 E5", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "G2 X1 Y2 I3 J4 E5", printer)
 
     # assert
     assert(decoded) == "Clockwise Arc Move (print), X:1, Y:2, I (distant X): 3, J (distant Y): 4, E: 5 mm"
-    assert(printer.positionX.get()) == "1"
-    assert(printer.positionY.get()) == "2"
-    assert(printer.extruderPhysical.get()) == "5.0"
+    assert(printer.position_x.get()) == "1"
+    assert(printer.position_y.get()) == "2"
+    assert(printer.extruder_physical.get()) == "5.0"
 
 
-def test_decodeGCodeLine_G3X1Y2I3J4E5_positionOk():
+def test_decode_gcode_line_g3_x1_y2_i3_j4_e5_position_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
     printer.home("", "")
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G3 X1 Y2 I3 J4 E5", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "G3 X1 Y2 I3 J4 E5", printer)
 
     # assert
     assert(decoded) == "Counter-Clockwise Arc Move (print), X:1, Y:2, I (distant X): 3, J (distant Y): 4, E: 5 mm"
-    assert(printer.positionX.get()) == "1"
-    assert(printer.positionY.get()) == "2"
-    assert(printer.extruderPhysical.get()) == "5.0"
+    assert(printer.position_x.get()) == "1"
+    assert(printer.position_y.get()) == "2"
+    assert(printer.extruder_physical.get()) == "5.0"
 
 
 simple_gcode_testdata = [
     ("G4", "Dwell (aka: Pause)"),
     ("G21", "Set Units to Millimeters"),
     ("G28 F100 W",
-        "Move to Origin (Home, often: X=0, Y=0; Z=0), " +
+        "Move to Origin (Home, often: X=0, Y=0; Z=0), "
         "unknown parameter (maybe feedrate?): F100, Suppress mesh bed leveling (Prusa only)"),
     ("G80", "Mesh-based Z probe"),
     ("G90", "Set to Absolute Positioning"),
     ("G91", "Set to Relative Positioning"),
     ("G92", "Set Position"),
     ("M73 P1 Q2 R3 S4",
-        "Set/Get build percentage, " +
+        "Set/Get build percentage, "
         "Normal mode: 1 %, Silent mode: 2 %, Remaining in normal mode: 3 min., Remaining in silent mode: 4 min."),
     ("M84", "Stop idle hold (disable motors)"),
     ("M105", "Get Extruder Temperature"),
@@ -338,14 +356,14 @@ simple_gcode_testdata = [
 
 
 @pytest.mark.parametrize("gcode,expected_message", simple_gcode_testdata)
-def test_decodeGCodeLine_SimpleCommand_Message(gcode, expected_message):
+def test_decode_gcode_line_simple_command_message(gcode, expected_message):
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, gcode, printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, gcode, printer)
 
     # assert
     assert(decoded) == expected_message
@@ -359,97 +377,97 @@ g28_xy_testdata = [
 
 
 @pytest.mark.parametrize("xy,expected_message,expected_x,expected_y", g28_xy_testdata)
-def test_decodeGCodeLine_g28xy_PositionXY(xy, expected_message, expected_x, expected_y):
+def test_decode_gcode_line_g28xy_position_xy(xy, expected_message, expected_x, expected_y):
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
     printer.home("", "")
-    printer._moveX("10")
-    printer._moveY("20")
-    decodeLine = GDecoderLine()
+    printer._move_x("10")
+    printer._move_y("20")
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G28 " + xy, printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "G28 " + xy, printer)
 
     # assert
     assert(decoded) == expected_message
-    assert(printer.positionX.get()) == expected_x
-    assert(printer.positionY.get()) == expected_y
+    assert(printer.position_x.get()) == expected_x
+    assert(printer.position_y.get()) == expected_y
 
 
-def test_decodeGCodeLine_G92E10_extruderPositionOk():
+def test_decode_gcode_line_g92_e10_extruder_position_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    printer.setExtruderPosition("0")
-    assert(printer.extruderLogical.get()) == "0"
-    assert(printer.extruderPhysical.get()) == "0"
-    decodeLine = GDecoderLine()
+    printer.set_extruder_position("0")
+    assert(printer.extruder_logical.get()) == "0"
+    assert(printer.extruder_physical.get()) == "0"
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "G92 E10", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "G92 E10", printer)
 
     # assert
     assert(decoded) == "Set Position, new extruder position: 10 mm"
-    assert(printer.extruderLogical.get()) == "10"
-    assert(printer.extruderPhysical.get()) == "0"
+    assert(printer.extruder_logical.get()) == "10"
+    assert(printer.extruder_physical.get()) == "0"
 
 
-def test_decodeGCodeLine_M104S50_extruderTempOk():
+def test_decode_gcode_line_m104_s50_extruder_temp_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    assert(printer.extruderTemp.get()) == "?"
-    decodeLine = GDecoderLine()
+    assert(printer.extruder_temp.get()) == "?"
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "M104 S50", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "M104 S50", printer)
 
     # assert
     assert(decoded) == "Set Extruder Temperature, Target: 50 °C"
-    assert(printer.extruderTemp.get()) == "50"
+    assert(printer.extruder_temp.get()) == "50"
 
 
-def test_decodeGCodeLine_M106S50_fanOk():
+def test_decode_gcode_line_m106_s50_fan_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
     assert(printer.fan.get()) == "?"
-    decodeLine = GDecoderLine()
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "M106 S50", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "M106 S50", printer)
 
     # assert
     assert(decoded) == "Fan On, Fan Speed: 50 (0-255)"
     assert(printer.fan.get()) == "50"
 
 
-def test_decodeGCodeLine_M109S50_extruderTempOk():
+def test_decode_gcode_line_m109_s50_extruder_temp_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    assert(printer.extruderTemp.get()) == "?"
-    decodeLine = GDecoderLine()
+    assert(printer.extruder_temp.get()) == "?"
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "M109 S50", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "M109 S50", printer)
 
     # assert
     assert(decoded) == "Set Extruder Temperature and Wait, Target: 50 °C"
-    assert(printer.extruderTemp.get()) == "50"
+    assert(printer.extruder_temp.get()) == "50"
 
 
-def test_decodeGCodeLine_M140S50_bedTempOk():
+def test_decode_gcode_line_m140_s50_bed_temp_ok():
     # arrange
-    metaInfos = FileMetaInfos()
+    meta_infos = FileMetaInfos()
     printer = PrinterModel()
-    assert(printer.bedTemp.get()) == "?"
-    decodeLine = GDecoderLine()
+    assert(printer.bed_temp.get()) == "?"
+    decode_line = GDecoderLine()
 
     # act
-    decoded = decodeLine.decodeGCodeLine(metaInfos, "M140 S50", printer)
+    decoded = decode_line.decode_gcode_line(meta_infos, "M140 S50", printer)
 
     # assert
     assert(decoded) == "Set Bed Temperature (Fast), Target: 50 °C"
-    assert(printer.bedTemp.get()) == "50"
+    assert(printer.bed_temp.get()) == "50"

@@ -13,39 +13,39 @@ import time
 import sys
 
 
-def getDiff(valueHigh, valueLow):
-    if valueHigh != "?" and valueLow != "?":
-        diffXFloat = round(float(valueHigh) - float(valueLow), 2)
-        return str(diffXFloat)
+def get_diff(value_high, value_low):
+    if value_high != "?" and value_low != "?":
+        diff_x_float = round(float(value_high) - float(value_low), 2)
+        return str(diff_x_float)
     else:
         return "?"
 
 
-def printPrinterModel(printer):
-    diffX = getDiff(printer.printPositionX.getMax(), printer.printPositionX.getMin())
-    diffY = getDiff(printer.printPositionY.getMax(), printer.printPositionY.getMin())
-    diffZ = getDiff(printer.printPositionZ.getMax(), printer.printPositionZ.getMin())
-    ePhys = round(float(printer.extruderPhysical.get()), 2)
-    ePhysMax = round(float(printer.extruderPhysical.getMax()), 2)
-    eLog = round(float(printer.extruderLogical.get()), 2)
+def print_printer_model(printer):
+    diff_x = get_diff(printer.print_position_x.get_max(), printer.print_position_x.get_min())
+    diff_y = get_diff(printer.print_position_y.get_max(), printer.print_position_y.get_min())
+    diff_z = get_diff(printer.print_position_z.get_max(), printer.print_position_z.get_min())
+    e_phys = round(float(printer.extruder_physical.get()), 2)
+    e_phys_max = round(float(printer.extruder_physical.get_max()), 2)
+    e_log = round(float(printer.extruder_logical.get()), 2)
 
     print(";------------------------------------------------------------------------------")
-    print(";X: " + printer.positionX.get() + " " + printer.unit, end="")
-    print(" (min: " + printer.positionX.getMin() + " max: " + printer.positionX.getMax() + " diff: " + diffX + ")")
+    print(";X: " + printer.print_position_x.get() + " " + printer.unit, end="")
+    print(f" (min: {printer.print_position_x.get_min()} max: {printer.print_position_x.get_max()} diff: {diff_x})")
 
-    print(";Y: " + printer.positionY.get() + " " + printer.unit, end="")
-    print(" (min: " + printer.printPositionY.getMin() + " max: " + printer.printPositionY.getMax() + " diff: " + diffY + ")")
+    print(";Y: " + printer.print_position_y.get() + " " + printer.unit, end="")
+    print(f" (min: {printer.print_position_y.get_min()} max: {printer.print_position_y.get_max()} diff: {diff_y})")
 
-    print(";Z: " + printer.positionZ.get() + " " + printer.unit, end="")
-    print(" (min: " + printer.printPositionZ.getMin() + " max: " + printer.printPositionZ.getMax() + " diff: " + diffZ + ")")
+    print(";Z: " + printer.print_position_z.get() + " " + printer.unit, end="")
+    print(f" (min: {printer.print_position_z.get_min()} max: {printer.print_position_z.get_max()} diff: {diff_z})")
 
-    print(";E: " + str(eLog) + " " + printer.unit, end="")
-    print(" (phys: " + str(ePhys) + ", max: " + str(ePhysMax) + ", move mode: " + printer.extruderMoveMode + ")")
+    print(";E: " + str(e_log) + " " + printer.unit, end="")
+    print(" (phys: " + str(e_phys) + ", max: " + str(e_phys_max) + ", move mode: " + printer.extruder_move_mode + ")")
 
     print(";Feedrate: " + printer.feedrate + " " + printer.unit + "/min")
 
-    print(";Temperature: Extruder: " + printer.extruderTemp.get() + " °C", end="")
-    print(", bed: " + printer.bedTemp.get() + " °C", end="")
+    print(";Temperature: Extruder: " + printer.extruder_temp.get() + " °C", end="")
+    print(", bed: " + printer.bed_temp.get() + " °C", end="")
     print(", fan: " + printer.fan.get() + " (0-255)")
     print(";------------------------------------------------------------------------------")
 
@@ -61,135 +61,135 @@ filaments = [
 ]
 
 
-def printFilamentInfos(filament, length):
+def print_filament_infos(filament, length):
     material = filament[0]
-    meterPerKgMin = filament[1]
-    meterPerKgMax = filament[2]
-    weightMin = round(length / meterPerKgMax, 1)
-    weightMax = round(length / meterPerKgMin, 1)
-    pricePerKgMin = filament[3]
-    pricePerKgMax = filament[4]
-    priceMin = round(weightMin * pricePerKgMin / 1000, 2)
-    priceMax = round(weightMax * pricePerKgMax / 1000, 2)
-    nozzleMin = filament[5]
-    nozzleMax = filament[6]
-    bedMin = filament[7]
-    bedMax = filament[8]
-    bedMandatory = filament[9]
+    meter_per_kg_min = filament[1]
+    meter_per_kg_max = filament[2]
+    weight_min = round(length / meter_per_kg_max, 1)
+    weight_max = round(length / meter_per_kg_min, 1)
+    price_per_kg_min = filament[3]
+    price_per_kg_max = filament[4]
+    price_min = round(weight_min * price_per_kg_min / 1000, 2)
+    price_max = round(weight_max * price_per_kg_max / 1000, 2)
+    nozzle_min = filament[5]
+    nozzle_max = filament[6]
+    bed_min = filament[7]
+    bed_max = filament[8]
+    bed_mandatory = filament[9]
 
-    weight = str(weightMin) + "-" + str(weightMax) + " g"
-    price = str(priceMin) + "-" + str(priceMax) + " €"
+    weight = str(weight_min) + "-" + str(weight_max) + " g"
+    price = str(price_min) + "-" + str(price_max) + " €"
     print(";  " + material + "     : " + weight + ", " + price, end="")
 
     print("    1.75 mm/1kg: Length:", end="")
-    print(" " + str(meterPerKgMin) + "-" + str(meterPerKgMax) + " m/kg", end="")
-    print(", Price: " + str(pricePerKgMin) + "-" + str(pricePerKgMax) + " €/kg", end="")
-    print(", Nozzle: " + str(nozzleMin) + "-" + str(nozzleMax) + " °C", end="")
-    print(", Bed: " + str(bedMin) + "-" + str(bedMax) + " °C", end="")
-    if not bedMandatory:
+    print(" " + str(meter_per_kg_min) + "-" + str(meter_per_kg_max) + " m/kg", end="")
+    print(", Price: " + str(price_per_kg_min) + "-" + str(price_per_kg_max) + " €/kg", end="")
+    print(", Nozzle: " + str(nozzle_min) + "-" + str(nozzle_max) + " °C", end="")
+    print(", Bed: " + str(bed_min) + "-" + str(bed_max) + " °C", end="")
+    if not bed_mandatory:
         print(" (bed optional)")
     else:
         print("")
 
 
-def isFilamentSuitableForTemp(filament, tempNozzle, tempBed):
-    nozzleMin = filament[5]
-    nozzleMax = filament[6]
-    bedMin = filament[7]
-    bedMax = filament[8]
-    bedMandatory = filament[9]
+def is_filament_suitable_for_temp(filament, temp_nozzle, temp_bed):
+    nozzle_min = filament[5]
+    nozzle_max = filament[6]
+    bed_min = filament[7]
+    bed_max = filament[8]
+    bed_mandatory = filament[9]
 
-    if tempNozzle.isdigit():
-        tempNozzleInt = int(tempNozzle)
+    if temp_nozzle.isdigit():
+        temp_nozzle_int = int(temp_nozzle)
     else:
-        tempNozzleInt = 0
-    if tempBed.isdigit():
-        tempBedInt = int(tempBed)
+        temp_nozzle_int = 0
+    if temp_bed.isdigit():
+        temp_bed_int = int(temp_bed)
     else:
-        tempBedInt = 0
+        temp_bed_int = 0
 
     # check nozzle temp
-    if tempNozzleInt < nozzleMin or tempNozzleInt > nozzleMax:
+    if temp_nozzle_int < nozzle_min or temp_nozzle_int > nozzle_max:
         return False
 
     # check bed temp
-    if (bedMandatory and tempBedInt < bedMin) or tempBedInt > bedMax:
+    if (bed_mandatory and temp_bed_int < bed_min) or temp_bed_int > bed_max:
         return False
 
     return True
 
 
-def printSummaryInfos(metaInfos, printer, gcodeCommandCount):
-    diffX = getDiff(printer.printPositionX.getMax(), printer.printPositionX.getMin())
-    diffY = getDiff(printer.printPositionY.getMax(), printer.printPositionY.getMin())
-    diffZ = getDiff(printer.printPositionZ.getMax(), printer.printPositionZ.getMin())
+def print_summary_infos(meta_infos, printer, gcode_command_count):
+    diff_x = get_diff(printer.print_position_x.get_max(), printer.print_position_x.get_min())
+    diff_y = get_diff(printer.print_position_y.get_max(), printer.print_position_y.get_min())
+    diff_z = get_diff(printer.print_position_z.get_max(), printer.print_position_z.get_min())
 
     print(";------------------------------------------------------------------------------")
     print(";Summary:")
     print(";File")
-    print(";  Name      : " + metaInfos.fileName)
-    print(";  Size      : " + str(metaInfos.fileSize) + " bytes")
-    print(";  Modified  : %s" % time.ctime(metaInfos.modifiedTime))
-    print(";  Lines     : " + str(metaInfos.lineCount))
-    print(";  Longest   : " + str(metaInfos.longestLine) + " characters (without comment lines)")
-    print(";  GCode     : " + str(gcodeCommandCount) + " commands")
-    generator_line = metaInfos.generator_line.strip(";")
+    print(";  Name      : " + meta_infos.file_name)
+    print(";  Size      : " + str(meta_infos.file_size) + " bytes")
+    print(";  Modified  : %s" % time.ctime(meta_infos.modified_time))
+    print(";  Lines     : " + str(meta_infos.line_count))
+    print(";  Longest   : " + str(meta_infos.longest_line) + " characters (without comment lines)")
+    print(";  GCode     : " + str(gcode_command_count) + " commands")
+    generator_line = meta_infos.generator_line.strip(";")
     print(";Generator")
     print(";  Line      : " + generator_line.strip())
-    print(";  Name      : " + metaInfos.generator)
-    print(";  Flavor    : " + metaInfos.generator_flavor)
+    print(";  Name      : " + meta_infos.generator)
+    print(";  Flavor    : " + meta_infos.generator_flavor)
     print(";Printed")
-    print(";  X         : " + diffX + " " + printer.unit)
-    print(";  Y         : " + diffY + " " + printer.unit)
-    print(";  Z         : " + diffZ + " " + printer.unit)
+    print(";  X         : " + diff_x + " " + printer.unit)
+    print(";  Y         : " + diff_y + " " + printer.unit)
+    print(";  Z         : " + diff_z + " " + printer.unit)
     print(";Temperature")
-    print(";  Extruder  : " + printer.extruderTemp.getMax() + " °C (max.)")
-    print(";  Bed       : " + printer.bedTemp.getMax() + " °C (max.)")
-    print(";  Fan       : " + printer.fan.getMax() + " (max.)")
+    print(";  Extruder  : " + printer.extruder_temp.get_max() + " °C (max.)")
+    print(";  Bed       : " + printer.bed_temp.get_max() + " °C (max.)")
+    print(";  Fan       : " + printer.fan.get_max() + " (max.)")
 
-    ePhysMax = round(float(printer.extruderPhysical.getMax()), 2)
+    e_phys_max = round(float(printer.extruder_physical.get_max()), 2)
     print(";Filament")
-    print(";  Length    : " + str(ePhysMax) + " " + printer.unit)
+    print(";  Length    : " + str(e_phys_max) + " " + printer.unit)
 
     print(";  suitable")
     for filament in filaments:
-        if isFilamentSuitableForTemp(filament, printer.extruderTemp.getMax(), printer.bedTemp.getMax()):
-            printFilamentInfos(filament, ePhysMax)
+        if is_filament_suitable_for_temp(filament, printer.extruder_temp.get_max(), printer.bed_temp.get_max()):
+            print_filament_infos(filament, e_phys_max)
 
     print(";  unsuitable")
     for filament in filaments:
-        if not isFilamentSuitableForTemp(filament, printer.extruderTemp.getMax(), printer.bedTemp.getMax()):
-            printFilamentInfos(filament, ePhysMax)
+        if not is_filament_suitable_for_temp(filament, printer.extruder_temp.get_max(), printer.bed_temp.get_max()):
+            print_filament_infos(filament, e_phys_max)
 
     # TODO: Add Time, Energy costs
 
 
-def readGCode(args, metaInfos, decodeLine, printer):
+def read_gcode(args, meta_infos, decode_line, printer):
     file1 = open(args.input, 'r', encoding='utf-8')
-    Lines = file1.readlines()
-    gcodeCommandCount = 0
+    lines = file1.readlines()
+    gcode_command_count = 0
 
-    for line in Lines:
+    for line in lines:
         line = line.strip()
 
         # comment line?
         if line.startswith(";"):
             # reset z value, caused by extruder initial cleanup procedure (at least on Cura/Marlin and PrusaSlicer)
             if ";TYPE:SKIRT".lower() in line.lower():
-                currentZ = printer.positionZ.get()
-                printer.printPositionZ.set(currentZ)
+                current_z = printer.position_z.get()
+                printer.print_position_z.set(current_z)
 
             if args.hideComments is False:
                 print(line)
             continue
 
-        decoded = decodeLine.decodeGCodeLine(metaInfos, line, printer)
+        decoded = decode_line.decode_gcode_line(meta_infos, line, printer)
 
         if decoded != "":
-            gcodeCommandCount += 1
+            gcode_command_count += 1
 
         if args.hideGCode is False:
-            formatstr = "{:" + str(metaInfos.longestLine + 1) + "}"
+            formatstr = "{:" + str(meta_infos.longest_line + 1) + "}"
             print(formatstr.format(line.strip()), end="")
 
         if args.hideDecoded is False and decoded != "":
@@ -199,36 +199,43 @@ def readGCode(args, metaInfos, decodeLine, printer):
                 print()
 
         if args.showVerbose is True:
-            printPrinterModel(printer)
+            print_printer_model(printer)
 
-    return gcodeCommandCount
+    return gcode_command_count
 
 
 def gdecoder(args):
     printer = PrinterModel()
 
-    metaInfos = FileMetaInfos()
-    metaInfos.readMetaInfos(args.input)
+    meta_infos = FileMetaInfos()
+    meta_infos.read_meta_infos(args.input)
 
-    decodeLine = GDecoderLine()
-    decodeLine.stopOnUndecoded = args.stopOnUndecoded
+    decode_line = GDecoderLine()
+    decode_line.stop_on_undecoded = args.stopOnUndecoded
 
-    gcodeCommandCount = readGCode(args, metaInfos, decodeLine, printer)
+    gcode_command_count = read_gcode(args, meta_infos, decode_line, printer)
 
     if args.hideSummary is False:
-        printSummaryInfos(metaInfos, printer, gcodeCommandCount)
+        print_summary_infos(meta_infos, printer, gcode_command_count)
 
 
 def parse_args(args):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     # TODO: use stdin as default
-    parser.add_argument('--input', '-i', help='input gcode file', required="True")
-    parser.add_argument('--summary', '-s', help='hide summary', action='store_true', dest="hideSummary")
-    parser.add_argument('--comments', '-c', help='hide original gcode comments', action='store_true', dest="hideComments")
-    parser.add_argument('--gcode', '-g', help='hide original gcode commands', action='store_true', dest="hideGCode")
-    parser.add_argument('--decoded', '-d', help='hide gcode decoded output', action='store_true', dest="hideDecoded")
-    parser.add_argument('--verbose', '-v', help='show verbose output (can be slow!)', action='store_true', dest="showVerbose")
-    parser.add_argument('--undecoded', '-u', help='stop on undecoded gcode', action='store_true', dest="stopOnUndecoded")
+    parser.add_argument('--input', '-i',
+                        help='input gcode file', required="True")
+    parser.add_argument('--summary', '-s',
+                        help='hide summary', action='store_true', dest="hideSummary")
+    parser.add_argument('--comments', '-c',
+                        help='hide original gcode comments', action='store_true', dest="hideComments")
+    parser.add_argument('--gcode', '-g',
+                        help='hide original gcode commands', action='store_true', dest="hideGCode")
+    parser.add_argument('--decoded', '-d',
+                        help='hide gcode decoded output', action='store_true', dest="hideDecoded")
+    parser.add_argument('--verbose', '-v',
+                        help='show verbose output (can be slow!)', action='store_true', dest="showVerbose")
+    parser.add_argument('--undecoded', '-u',
+                        help='stop on undecoded gcode', action='store_true', dest="stopOnUndecoded")
     return parser.parse_args(args)
 
 
