@@ -34,7 +34,7 @@ jobs:
         python -m pip install pytest flake8 pep8-naming
         pip install -r requirements.txt
 
-    - name: Lint with flake8
+    - name: Lint with flake8 and pep8-naming
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
