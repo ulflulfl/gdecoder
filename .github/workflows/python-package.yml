@@ -36,11 +36,10 @@ jobs:
 
     - name: Lint with flake8 and pep8-naming
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        # ignore E275 on assert() calls
-        flake8 . --count --exit-zero --ignore=E275 --max-complexity=10 --max-line-length=127 --statistics
+        # see: .flake8 file for workspace ini settings
+        # Hint: ignore E275 on test assert() calls
+        flake8 . --filename=*_test.py --ignore=E275
+        flake8 . --exclude=*_test.py
 
     - name: Unit tests with pytest (incl. coverage)
       run: |

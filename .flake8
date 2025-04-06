@@ -1,0 +1,13 @@
+[flake8]
+# syntax: https://flake8.pycqa.org/en/latest/user/configuration.html
+# options: https://flake8.pycqa.org/en/latest/user/options.html#options-list
+
+# The GitHub editor is 127 chars wide
+max-line-length=127
+# cyclomatic complexity
+max-complexity=10
+
+# print total number of errors
+count=True
+# print counts of each error/warning
+statistics=True
