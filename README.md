@@ -8,9 +8,9 @@ In an attempt to understand G-code details, I've started a python script that ta
 
 Special G-code features e.g. for dual extruders, delta printers, resin printers or CNC mills are not implemented.
 
-There are other similiar programs like: https://github.com/BarrensZeppelin/humanize-gcode/tree/master
+There are other similar programs like: https://github.com/BarrensZeppelin/humanize-gcode/tree/master
 
-Hint: Many G-ccode details can be found at:
+Hint: Many G-code details can be found at:
 * https://en.wikipedia.org/wiki/G-code
 * https://reprap.org/wiki/G-code
 * https://marlinfw.org/meta/gcode/

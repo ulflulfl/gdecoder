@@ -70,13 +70,13 @@ class PrinterModel:
             z = "0"
 
         if x != "":
-            self._homex(x)
+            self._home_x(x)
         if y != "":
             self._home_y(y)
         if z != "":
             self._home_z()
 
-    def _homex(self, value):
+    def _home_x(self, value):
         if value != "0":
             raise Exception("homeX: Unexpected value: " + value)
         # TODO: Is the positioning mode important here?

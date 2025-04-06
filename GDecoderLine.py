@@ -28,7 +28,7 @@ class GDecoderLine:
             return ", " + message
 
     def error_firmware_dependent_but_unknown_generator(self, meta_infos, splitted):
-        message = "Uexpected generator " + meta_infos.generator + " for firmware dependent: " + str(splitted)
+        message = "Unexpected generator " + meta_infos.generator + " for firmware dependent: " + str(splitted)
         if self.stop_on_undecoded:
             raise Exception(message)
         else:

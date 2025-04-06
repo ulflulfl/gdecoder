@@ -3,7 +3,7 @@ import pytest
 pytestmark = pytest.mark.unittests
 
 
-def test_printx_absolute_mode_x_positions_ok():
+def test_print_x_absolute_mode_x_positions_ok():
     # arrange
     printer = PrinterModel()
     printer.set_positioning_mode("absolute")
@@ -22,7 +22,7 @@ def test_printx_absolute_mode_x_positions_ok():
     assert(printer.print_position_x.get_max()) == "2"
 
 
-def test_printx_absolute_mode_printz_updated():
+def test_print_x_absolute_mode_print_z_updated():
     # arrange
     printer = PrinterModel()
     printer.set_positioning_mode("absolute")
@@ -37,7 +37,7 @@ def test_printx_absolute_mode_printz_updated():
     assert(printer.print_position_z.get()) == "1"
 
 
-def test_printx_relative_mode_raises_exeption():
+def test_print_x_relative_mode_raises_exception():
     # arrange
     printer = PrinterModel()
     printer.set_positioning_mode("relative")
@@ -52,7 +52,7 @@ def test_printx_relative_mode_raises_exeption():
     assert exception_msg == "relative X positions not implemented"
 
 
-def test_printy_absolute_mode_y_positions_ok():
+def test_print_y_absolute_mode_y_positions_ok():
     # arrange
     printer = PrinterModel()
     printer.set_positioning_mode("absolute")
@@ -71,7 +71,7 @@ def test_printy_absolute_mode_y_positions_ok():
     assert(printer.print_position_y.get_max()) == "2"
 
 
-def test_printy_absolute_mode_printz_updated():
+def test_print_y_absolute_mode_print_z_updated():
     # arrange
     printer = PrinterModel()
     printer.set_positioning_mode("absolute")
@@ -86,7 +86,7 @@ def test_printy_absolute_mode_printz_updated():
     assert(printer.print_position_z.get()) == "1"
 
 
-def test_printy_relative_mode_raises_exeption():
+def test_print_y_relative_mode_raises_exception():
     # arrange
     printer = PrinterModel()
     printer.set_positioning_mode("relative")
@@ -101,7 +101,7 @@ def test_printy_relative_mode_raises_exeption():
     assert exception_msg == "relative Y positions not implemented"
 
 
-def test_printz_physical_positions_ok():
+def test_print_z_physical_positions_ok():
     # arrange
     printer = PrinterModel()
     printer.home("", "")
@@ -119,7 +119,7 @@ def test_printz_physical_positions_ok():
     assert(printer.print_position_z.get_max()) == "2"
 
 
-def test_printz_absolute_positions_ok():
+def test_print_z_absolute_positions_ok():
     # arrange
     printer = PrinterModel()
     printer.home("", "")
@@ -137,7 +137,7 @@ def test_printz_absolute_positions_ok():
     assert(printer.print_position_z.get_max()) == "2"
 
 
-def test_printz_relative_positions_ok():
+def test_print_z_relative_positions_ok():
     # arrange
     printer = PrinterModel()
     printer.home("", "")
@@ -156,7 +156,7 @@ def test_printz_relative_positions_ok():
     assert(printer.print_position_z.get_max()) == "3.0"
 
 
-def test_printz_no_initial_position_in_relative_raises_exception():
+def test_print_z_no_initial_position_in_relative_raises_exception():
     # arrange
     printer = PrinterModel()
     printer.set_positioning_mode("relative")
@@ -170,7 +170,7 @@ def test_printz_no_initial_position_in_relative_raises_exception():
     assert exception_msg == "printZ: relative Z move without initial positioning"
 
 
-def test_printz_invalid_positioning_mode_raises_exception():
+def test_print_z_invalid_positioning_mode_raises_exception():
     # arrange
     printer = PrinterModel()
     printer.positioning_mode = "invalid"

@@ -189,8 +189,8 @@ def read_gcode(args, meta_infos, decode_line, printer):
             gcode_command_count += 1
 
         if args.hideGCode is False:
-            formatstr = "{:" + str(meta_infos.longest_line + 1) + "}"
-            print(formatstr.format(line.strip()), end="")
+            format_str = "{:" + str(meta_infos.longest_line + 1) + "}"
+            print(format_str.format(line.strip()), end="")
 
         if args.hideDecoded is False and decoded != "":
             print(' ; ' + decoded)

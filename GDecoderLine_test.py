@@ -218,7 +218,7 @@ def test_decode_gcode_line_invalid_generator_specific_error_message(gcode, gener
     decoded = decode_line.decode_gcode_line(meta_infos, gcode, printer)
 
     # assert
-    assert(decoded) == "Uexpected generator " + generator + " for firmware dependent: " + expected_message
+    assert(decoded) == "Unexpected generator " + generator + " for firmware dependent: " + expected_message
 
 
 # We've checked all the invalid generator messages already above,
@@ -237,7 +237,7 @@ def test_decode_gcode_line_invalid_generator_specific_raises_exception():
 
     # assert
     exception_msg = e_info.value.args[0]
-    assert exception_msg == "Uexpected generator abc for firmware dependent: ['M203']"
+    assert exception_msg == "Unexpected generator abc for firmware dependent: ['M203']"
 
 
 valid_gcode_feedrate_testdata = [

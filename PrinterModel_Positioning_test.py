@@ -85,7 +85,7 @@ def test_home_xy_unchanged_z():
     assert(printer.position_z.get() == "3")
 
 
-def test_home_xnot0_raises_exception():
+def test_home_x_not0_raises_exception():
     # arrange
     printer = PrinterModel()
 
@@ -98,7 +98,7 @@ def test_home_xnot0_raises_exception():
     assert exception_msg == "homeX: Unexpected value: 1"
 
 
-def test_home_ynot0_raises_exception():
+def test_home_y_not0_raises_exception():
     # arrange
     printer = PrinterModel()
 
