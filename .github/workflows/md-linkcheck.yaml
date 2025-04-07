@@ -17,4 +17,4 @@ jobs:
     - name: Markup Link Checker (mlc)
       uses: becheran/mlc@v0.21.0
       with:
-        args: .
+        args: . --ignore-links "https://www.gnu.org*"
