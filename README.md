@@ -1,6 +1,8 @@
 # gdecoder
 
-![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?logo=ubuntu&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white) [![Python versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org) ![Python tests](https://github.com/ulflulfl/gdecoder/actions/workflows/python-tests.yml/badge.svg) [![codecov](https://codecov.io/gh/ulflulfl/gdecoder/graph/badge.svg?token=3E8MW86VM7)](https://app.codecov.io/gh/ulflulfl/gdecoder) ![md-linkcheck](https://github.com/ulflulfl/gdecoder/actions/workflows/md-linkcheck.yaml/badge.svg) [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?logo=ubuntu&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white) [![Python versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org) [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+![Python tests](https://github.com/ulflulfl/gdecoder/actions/workflows/python-tests.yml/badge.svg) [![codecov](https://codecov.io/gh/ulflulfl/gdecoder/graph/badge.svg?token=3E8MW86VM7)](https://app.codecov.io/gh/ulflulfl/gdecoder) ![md-linkcheck](https://github.com/ulflulfl/gdecoder/actions/workflows/md-linkcheck.yaml/badge.svg) ![Spell check](https://github.com/ulflulfl/gdecoder/actions/workflows/spellcheck.yaml/badge.svg)
 
 Simple decode of 3D printer .gcode files, focused on common x/y/z printer with a single extruder.
 
