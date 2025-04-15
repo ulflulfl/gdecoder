@@ -1,0 +1,36 @@
+name: Python
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: General Infos
+        run: |
+          echo "Triggered by a ${{ github.event_name }} event on ${{ runner.os }}."
+          echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: List files in the repository
+        run: |
+          echo "The cloned ${{ github.repository }} repository content:"
+          ls ${{ github.workspace }}
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # pep8-naming: https://pypi.org/project/pep8-naming/
+          python -m pip install pytest flake8 pep8-naming
+
+      - name: Lint Python code with flake8 and pep8-naming
+        run: |
+          # see: .flake8 file for workspace ini settings
+          # Hint: ignore E275 on test assert() calls
+          flake8 . --filename=*_test.py --ignore=E275
+          flake8 . --exclude=*_test.py
