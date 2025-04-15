@@ -2,7 +2,7 @@
     "version": "0.2",
     "language": "en",
     "ignorePaths": [
-        "*.drawio",
+        "*.drawio"
     ],
     "dictionaryDefinitions": [],
     "dictionaries": [],
@@ -12,10 +12,13 @@
         "feedrate",
         "fixturenames",
         "gcode",
+        "gcodes",
         "gdecoder",
+        "linkcheck",
         "metafunc",
         "PETG",
         "Prusa",
+        "Prusaslicer",
         "pytest",
         "pytestmark",
         "Slic",
