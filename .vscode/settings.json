@@ -1,21 +1,5 @@
 {
     "cSpell.words": [
-        "addopts",
-        "Cura",
-        "feedrate",
-        "fixturenames",
-        "gcode",
-        "gdecoder",
-        "metafunc",
-        "PETG",
-        "Prusa",
-        "pytest",
-        "pytestmark",
-        "Slic",
-        "subtoken",
-        "trimpot",
-        "undecoded",
-        "unittests"
     ],
     "python.testing.pytestArgs": [
         "."

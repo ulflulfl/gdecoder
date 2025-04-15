@@ -1,0 +1,29 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "ignorePaths": [
+        "*.svg"
+    ],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "addopts",
+        "Cura",
+        "feedrate",
+        "fixturenames",
+        "gcode",
+        "gdecoder",
+        "metafunc",
+        "PETG",
+        "Prusa",
+        "pytest",
+        "pytestmark",
+        "Slic",
+        "subtoken",
+        "trimpot",
+        "undecoded",
+        "unittests"
+    ],
+    "ignoreWords": [],
+    "import": []
+}
