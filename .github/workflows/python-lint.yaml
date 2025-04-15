@@ -1,4 +1,4 @@
-name: Python
+name: Python lint
 on: [push]
 
 jobs:
