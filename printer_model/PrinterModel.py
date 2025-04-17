@@ -1,7 +1,7 @@
 # very simple 3d printer model
 # (many details not included, e.g. dual extruder)
 
-from PrinterModelValue import PrinterModelValue
+from printer_model.PrinterModelValue import PrinterModelValue
 
 
 class PrinterModel:

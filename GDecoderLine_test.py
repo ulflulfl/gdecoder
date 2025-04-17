@@ -1,5 +1,5 @@
 from GDecoderLine import GDecoderLine
-from PrinterModel import PrinterModel
+from printer_model.PrinterModel import PrinterModel
 from FileMetaInfos import FileMetaInfos
 import pytest
 pytestmark = pytest.mark.unittests

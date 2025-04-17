@@ -5,7 +5,7 @@
 # https://reprap.org/wiki/G-code
 # https://marlinfw.org/meta/gcode/
 
-from PrinterModel import PrinterModel
+from printer_model.PrinterModel import PrinterModel
 from FileMetaInfos import FileMetaInfos
 from GDecoderLine import GDecoderLine
 import argparse
