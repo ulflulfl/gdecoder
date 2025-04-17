@@ -4,7 +4,7 @@
 
 ![Python tests](https://github.com/ulflulfl/gdecoder/actions/workflows/python-tests.yml/badge.svg) [![codecov](https://codecov.io/gh/ulflulfl/gdecoder/graph/badge.svg?token=3E8MW86VM7)](https://app.codecov.io/gh/ulflulfl/gdecoder) ![Python lint](https://github.com/ulflulfl/gdecoder/actions/workflows/python-lint.yaml/badge.svg) ![md-linkcheck](https://github.com/ulflulfl/gdecoder/actions/workflows/md-linkcheck.yaml/badge.svg) ![Spell check](https://github.com/ulflulfl/gdecoder/actions/workflows/spellcheck.yaml/badge.svg)
 
-Simple decode of 3D printer .gcode files, focused on common x/y/z printer with a single extruder.
+Decode of 3D printer .gcode files into human readable text, focused on common x/y/z printer with a single extruder.
 
 In an attempt to understand G-code details, I've started a python script that takes a .gcode (text) file and adds human readable comments to it. In addition, it adds summary infos like the printed area and (common) filament types probably suitable for the print (based on the temperatures used).
 
